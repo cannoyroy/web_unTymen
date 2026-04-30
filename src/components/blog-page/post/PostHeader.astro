@@ -1,0 +1,58 @@
+---
+interface Frontmatter {
+  title: string;
+  pubDate: Date;
+  description: string;
+  author: string;
+  image?: {
+    url: string;
+    alt: string;
+  };
+  tags?: string[];
+}
+
+interface Props {
+  frontmatter: Frontmatter;
+  readingTime?: number;
+}
+
+const { frontmatter, readingTime = 1 } = Astro.props as Props;
+---
+
+<header class="border-b border-slate-300/90 pb-6">
+  <h1 class="text-3xl font-semibold tracking-tight text-slate-900 md:text-4xl">{frontmatter.title}</h1>
+
+  <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-600">
+    <span>{frontmatter.author}</span>
+    <span aria-hidden="true">/</span>
+    <time datetime={frontmatter.pubDate.toISOString()}>{frontmatter.pubDate.toLocaleDateString()}</time>
+    <span aria-hidden="true">/</span>
+    <span>{readingTime} 分钟阅读</span>
+  </div>
+
+  <p class="mt-4 leading-7 text-slate-700">{frontmatter.description}</p>
+
+  {frontmatter.image?.url && (
+    <img
+      class="mt-5 max-h-[420px] w-full rounded-lg border border-slate-300 object-cover"
+      src={frontmatter.image.url}
+      alt={frontmatter.image.alt || ""}
+      loading="lazy"
+    />
+  )}
+
+  {(frontmatter.tags ?? []).length > 0 && (
+    <ul class="mt-5 flex flex-wrap gap-2">
+      {(frontmatter.tags ?? []).map((tag) => (
+        <li>
+          <a
+            href={`/tags/${tag}`}
+            class="inline-flex border border-slate-300 px-2.5 py-1 text-xs tracking-wide text-slate-700 transition hover:border-slate-500 hover:text-slate-900"
+          >
+            #{tag}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )}
+</header>

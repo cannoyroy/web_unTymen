@@ -1,0 +1,16 @@
+---
+import type { ResearchItem } from "../../data/experience";
+import ExperienceCard from "./ExperienceCard.astro";
+
+interface Props {
+  items: ResearchItem[];
+}
+
+const { items } = Astro.props as Props;
+---
+
+<div class="space-y-4">
+  {items.map((item) => (
+    <ExperienceCard type="research" item={item} />
+  ))}
+</div>

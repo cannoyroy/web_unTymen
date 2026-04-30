@@ -1,0 +1,65 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import {
+  actionLinks,
+  experienceSections,
+  heroProfile,
+  projectItems,
+  publicationItems,
+  researchItems,
+} from "../data/experience";
+import ExperienceHero from "../components/experience-page/ExperienceHero.astro";
+import ExperienceSection from "../components/experience-page/ExperienceSection.astro";
+import PublicationList from "../components/experience-page/PublicationList.astro";
+import ProjectList from "../components/experience-page/ProjectList.astro";
+import ResearchList from "../components/experience-page/ResearchList.astro";
+import SectionToc from "../components/experience-page/SectionToc.astro";
+import SectionTocIsland from "../components/experience-page/SectionTocIsland";
+import SectionTocMobileIsland from "../components/experience-page/SectionTocMobileIsland";
+import ScrollRevealIsland from "../components/experience-page/ScrollRevealIsland";
+import Timeline from "../components/experience-page/Timeline.astro";
+
+const pageTitle = "About | Reid";
+---
+
+<BaseLayout pageTitle={pageTitle} showChatFloat={false}>
+  <section class="pt-4 pb-8 sm:pt-6 sm:pb-12">
+    <ExperienceHero profile={heroProfile} links={actionLinks} />
+    <ScrollRevealIsland client:load />
+
+    <div class="mt-7 grid gap-9 lg:grid-cols-[minmax(0,1fr)_240px] lg:gap-11">
+      <div class="order-2 space-y-9 lg:order-1">
+        <ExperienceSection
+          id="research"
+          title="Research"
+          subtitle="Current research interests and ongoing technical focus."
+        >
+          <ResearchList items={researchItems} />
+        </ExperienceSection>
+
+        <ExperienceSection
+          id="projects"
+          title="Projects"
+          subtitle="Selected technical work relevant to research-oriented MSc training."
+        >
+          <ProjectList items={projectItems} />
+          <Timeline items={projectItems} />
+        </ExperienceSection>
+
+        <ExperienceSection
+          id="publications"
+          title="Publications"
+          subtitle="Peer-reviewed work and preprints."
+        >
+          <PublicationList items={publicationItems} />
+        </ExperienceSection>
+      </div>
+
+      <aside class="order-1 lg:order-2 lg:pt-1">
+        <SectionToc sections={experienceSections} />
+        <SectionTocIsland client:load />
+        <SectionTocMobileIsland client:load />
+      </aside>
+    </div>
+  </section>
+</BaseLayout>

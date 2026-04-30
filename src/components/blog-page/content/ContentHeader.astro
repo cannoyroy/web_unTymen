@@ -1,0 +1,29 @@
+---
+import DrawerIcon from "../../shared/icons/blog/DrawerIcon.astro";
+
+const {title, count} = Astro.props;
+---
+<button
+  class="drawer-toggle-btn relative z-10 inline-flex shrink-0 items-center justify-center p-2.5 rounded-xl transition-all duration-200 group"
+  aria-label="Open Sidebar"
+  type="button"
+>
+    <DrawerIcon/>
+</button>
+
+<div class="flex items-center gap-2">
+    <h2 class="text-xl font-bold text-base-content/70 uppercase tracking-tight">
+      {title}
+    </h2>
+    {
+      count !== undefined && (
+        <span class="text-sm font-mono text-base-content/40">{count}</span>
+      )
+    }
+</div>
+
+<div class="flex items-right gap-1">
+    <button class="p-2 hover:bg-base-200 hover:text-gray-600 rounded-lg transition-colors">
+      <slot name="header-right" />
+    </button>
+</div>

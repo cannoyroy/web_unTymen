@@ -1,0 +1,35 @@
+---
+import TwitterIcon from "./icons/contact/TwitterIcon.astro";
+import YouTubeIcon from "./icons/contact/YouTubeIcon.astro";
+import FacebookIcon from "./icons/contact/FacebookIcon.astro";
+
+type SocialLink = {
+  href: string;
+  label: string;
+  icon: 'twitter' | 'youtube' | 'facebook';
+};
+
+const {
+  links = [
+    { href: 'https://twitter.com', label: 'Twitter', icon: 'twitter' },
+    { href: 'https://www.youtube.com', label: 'YouTube', icon: 'youtube' },
+    { href: 'https://www.facebook.com', label: 'Facebook', icon: 'facebook' },
+  ],
+} = Astro.props as { links?: SocialLink[] };
+
+const iconMap = {
+  twitter: TwitterIcon,
+  youtube: YouTubeIcon,
+  facebook: FacebookIcon,
+};
+---
+<div class="grid grid-flow-col gap-4">
+  {links.map((item) => {
+    const Icon = iconMap[item.icon];
+    return (
+      <a href={item.href} aria-label={item.label} target="_blank" rel="noreferrer noopener">
+        <Icon />
+      </a>
+    );
+  })}
+</div>

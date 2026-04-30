@@ -1,0 +1,31 @@
+---
+import { getCollection, render } from 'astro:content';
+import MarkdownPostLayout from '../../layouts/MarkdownPostLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map(post => ({
+    params: { slug: post.id }, props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const countReadingTime = (text: string) => {
+  const wordMatches = text.match(/[A-Za-z0-9]+/g) || [];
+  const cjkMatches = text.match(/[\u4e00-\u9fff]/g) || [];
+  const total = wordMatches.length + cjkMatches.length;
+  return Math.max(1, Math.round(total / 300));
+};
+const readingTime = countReadingTime(post.body ?? '');
+---
+
+
+<MarkdownPostLayout
+  frontmatter={post.data}
+  headings={headings}
+  readingTime={readingTime}
+  postId={post.id}
+>
+    <Content/>
+</MarkdownPostLayout>

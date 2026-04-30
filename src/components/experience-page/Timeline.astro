@@ -1,0 +1,32 @@
+---
+import type { ProjectItem } from "../../data/experience";
+
+interface Props {
+  items: ProjectItem[];
+}
+
+const { items } = Astro.props as Props;
+---
+
+<section aria-label="Projects timeline" class="mt-6">
+  <div class="relative pl-6">
+    {/* vertical line */}
+    <div class="absolute left-2 top-0 bottom-0 w-px bg-slate-300/80"></div>
+
+    <ol class="space-y-6">
+      {items.map((item) => (
+        <li class="relative">
+          <div class="absolute -left-4 top-1.5 h-3 w-3 rounded-full border border-slate-300 bg-slate-50"></div>
+          <div class="ml-2">
+            <div class="flex items-baseline justify-between gap-3">
+              <h4 class="text-sm font-semibold text-slate-900">{item.title}</h4>
+              <time class="text-xs text-slate-600">{item.period}</time>
+            </div>
+            <p class="mt-1 text-sm text-slate-700">{item.summary}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+

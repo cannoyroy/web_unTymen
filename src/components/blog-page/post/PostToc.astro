@@ -1,0 +1,42 @@
+---
+interface HeadingItem {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: HeadingItem[];
+  title?: string;
+}
+
+const { headings, title = "章节导航" } = Astro.props as Props;
+---
+
+<nav class="border border-slate-300/90 bg-slate-50/35 p-4" aria-label="文章目录">
+  <h2 class="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">{title}</h2>
+
+  {
+    headings.length > 0 ? (
+      <ul class="space-y-1.5">
+        {headings.map((heading) => (
+          <li>
+            <a
+              href={`#${heading.slug}`}
+              data-post-toc-link
+              data-target-id={heading.slug}
+              class:list={[
+                "inline-flex w-full border-l-2 border-transparent py-1.5 text-sm text-slate-500 transition hover:border-slate-500 hover:text-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500",
+                heading.depth >= 3 ? "pl-6" : "pl-3",
+              ]}
+            >
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="text-sm text-slate-500">暂无可导航章节。</p>
+    )
+  }
+</nav>

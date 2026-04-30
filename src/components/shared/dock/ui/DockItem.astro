@@ -1,0 +1,40 @@
+---
+// Reusable Dock item (link + tooltip + optional action/close).
+interface Props {
+  label: string;
+  href: string;
+  icon: string;
+  external?: boolean;
+  removable?: boolean;
+  action?: string;
+}
+
+const { label, href, icon, external = false, removable = false, action } = Astro.props;
+---
+
+<li class="dock-item group relative" data-label={label} data-href={href} data-action={action}>
+  <a
+    href={href}
+    class="tooltip tooltip-top block"
+    data-tip={label}
+    target={external ? '_blank' : undefined}
+    rel={external ? 'noreferrer noopener' : undefined}
+    aria-label={label}
+  >
+    <span class="dock-icon flex h-12 w-12 items-center justify-center rounded-2xl border border-white/20 bg-white/10 text-white shadow-lg transition-all duration-200 ease-out group-hover:scale-[1.2] group-hover:shadow-2xl">
+      <span class="h-6 w-6" set:html={icon} />
+    </span>
+  </a>
+
+  {removable && (
+    <button
+      type="button"
+      class="dock-remove btn btn-xs btn-circle btn-error absolute -right-1 -top-1 hidden border-0 text-[10px] text-white group-hover:flex"
+      aria-label={`关闭 ${label}`}
+      title={`关闭 ${label}`}
+    >
+      ×
+    </button>
+  )}
+</li>
+

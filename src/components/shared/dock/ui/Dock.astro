@@ -1,0 +1,281 @@
+﻿---
+import DockActivityLayer from "./DockActivityLayer.astro";
+import DockHomeItem from "./items/DockHomeItem.astro";
+import DockBlogItem from "./items/DockBlogItem.astro";
+import DockAboutItem from "./items/DockAboutItem.astro";
+import DockTerminalItem from "./items/DockTerminalItem.astro";
+import DockBackToTop from "./items/DockBackToTopItem.astro";
+import DockThemeToggle from "./items/DockThemeToggleItem.astro";
+import DockRssLink from "./items/DockRssLinkItem.astro";
+import { featureFlags } from "../../../../config/features";
+
+const { pageTitle = "页面", currentPath = "/" } = Astro.props;
+
+const dockPayload = {
+  pageTitle,
+  currentPath,
+};
+
+const dockItems = [
+  DockHomeItem,
+  DockBlogItem,
+  DockAboutItem,
+  ...(featureFlags.enableTerminal ? [DockTerminalItem] : []),
+];
+
+const actionItems = [DockBackToTop, DockThemeToggle, DockRssLink];
+
+const externalDockItems: any[] = [];
+
+const leftItems = [...dockItems, ...actionItems];
+---
+
+<div class="pointer-events-none fixed inset-x-0 bottom-0 z-70 hidden md:block">
+  <div class="dock-sensor h-24 w-full"></div>
+  <!-- Dock reveal trigger zone -->
+  <div class="dock-reveal-zone pointer-events-auto fixed inset-x-0 bottom-0 h-12 z-50"></div>
+  <nav
+    id="mac-dock"
+    class="pointer-events-auto mx-auto mb-4 flex w-fit max-w-[90vw] items-center gap-3 rounded-3xl border border-white/30 bg-black/55 px-4 py-3 text-white shadow-2xl backdrop-blur-md transition-all duration-300 ease-out"
+    data-state="visible"
+    data-dock={JSON.stringify(dockPayload)}
+  >
+    <ul class="dock-left flex items-end gap-2">
+      {leftItems.map((Component) => <Component />)}
+    </ul>
+
+    <div class="dock-divider h-8 w-px bg-white/40"></div>
+
+    <ul class="dock-right flex items-end gap-2">
+      {externalDockItems.map((Component) => <Component />)}
+    </ul>
+  </nav>
+</div>
+
+<DockActivityLayer />
+
+<script type="module">
+  import { bootstrapDock } from "/src/components/shared/dock/index.ts";
+
+  bootstrapDock();
+</script>
+
+<style is:inline>
+  :global(.dock-hidden #mac-dock) {
+    transform: translateY(140%) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  :global(.dock-hidden .dock-sensor) {
+    display: none;
+  }
+
+  .dock-activity {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0);
+    transition: background 180ms ease;
+  }
+
+  .dock-activity.hidden {
+    display: none;
+  }
+
+  .dock-activity.is-visible {
+    pointer-events: auto;
+    background: rgba(0, 0, 0, 0.25);
+  }
+
+  .dock-activity-window {
+    width: min(760px, 94vw);
+    height: min(78vh, 720px);
+    min-width: 420px;
+    min-height: 360px;
+    position: absolute;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    box-shadow: 0 20px 44px rgba(0, 0, 0, 0.28);
+    overflow: hidden;
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    transform-origin: center;
+    animation: dock-window-open 200ms ease-out;
+    transition:
+      transform 220ms ease,
+      opacity 220ms ease,
+      border-radius 220ms ease;
+    will-change: transform;
+    contain: layout paint;
+  }
+
+  .dock-activity-window.hidden {
+    display: none;
+  }
+
+  .dock-activity-titlebar {
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 0 12px;
+    background: linear-gradient(180deg, #f6f6f6, #dcdcdc);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  }
+
+  .dock-traffic-lights {
+    position: absolute;
+    left: 12px;
+    display: flex;
+    gap: 8px;
+  }
+
+  .dock-control {
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+  }
+
+  .dock-control-close {
+    background: #ff5f57;
+  }
+
+  .dock-control-minimize {
+    background: #febc2e;
+  }
+
+  .dock-control-fullscreen {
+    background: #28c840;
+  }
+
+  .dock-activity-title {
+    margin: 0;
+    font-size: 13px;
+    color: #2f2f2f;
+    font-weight: 600;
+  }
+
+  .dock-activity-body {
+    background: #f5f5f5;
+    flex: 1;
+    display: flex;
+  }
+
+  .dock-activity-frame {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #fff;
+    flex: 1;
+  }
+
+  .dock-activity-resize-handles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .dock-activity-resize-handle {
+    position: absolute;
+    pointer-events: auto;
+  }
+
+  .dock-activity-resize-handle[data-resize="n"],
+  .dock-activity-resize-handle[data-resize="s"] {
+    left: 10px;
+    right: 10px;
+    height: 10px;
+  }
+
+  .dock-activity-resize-handle[data-resize="n"] {
+    top: -4px;
+    cursor: ns-resize;
+  }
+
+  .dock-activity-resize-handle[data-resize="s"] {
+    bottom: -4px;
+    cursor: ns-resize;
+  }
+
+  .dock-activity-resize-handle[data-resize="e"],
+  .dock-activity-resize-handle[data-resize="w"] {
+    top: 10px;
+    bottom: 10px;
+    width: 10px;
+  }
+
+  .dock-activity-resize-handle[data-resize="e"] {
+    right: -4px;
+    cursor: ew-resize;
+  }
+
+  .dock-activity-resize-handle[data-resize="w"] {
+    left: -4px;
+    cursor: ew-resize;
+  }
+
+  .dock-activity-resize-handle[data-resize="ne"],
+  .dock-activity-resize-handle[data-resize="nw"],
+  .dock-activity-resize-handle[data-resize="se"],
+  .dock-activity-resize-handle[data-resize="sw"] {
+    width: 16px;
+    height: 16px;
+  }
+
+  .dock-activity-resize-handle[data-resize="ne"] {
+    top: -6px;
+    right: -6px;
+    cursor: nesw-resize;
+  }
+
+  .dock-activity-resize-handle[data-resize="nw"] {
+    top: -6px;
+    left: -6px;
+    cursor: nwse-resize;
+  }
+
+  .dock-activity-resize-handle[data-resize="se"] {
+    bottom: -6px;
+    right: -6px;
+    cursor: nwse-resize;
+  }
+
+  .dock-activity-resize-handle[data-resize="sw"] {
+    bottom: -6px;
+    left: -6px;
+    cursor: nesw-resize;
+  }
+
+  .dock-activity-window.dock-activity-minimized {
+    transform: scale(0.86) translateY(120px);
+    opacity: 0;
+    transition:
+      transform 180ms ease-in,
+      opacity 180ms ease-in;
+  }
+
+  .dock-activity-window.dock-activity-fullscreen {
+    transform: scale(1.04);
+    transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  @keyframes dock-window-open {
+    from {
+      transform: scale(0.92) translateY(18px);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+  }
+</style>

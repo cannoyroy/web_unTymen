@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { buildTagTree } from '../../utils/tags';
+import TagTreeNode from '../../components/blog-page/post/TagTreeNode.astro';
+
+const allPosts = await getCollection('blog');
+const tagTree = buildTagTree(allPosts);
+const pageTitle = '标签索引';
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <div class="rounded-3xl border border-base-300 bg-base-100 p-5 shadow-sm">
+    <h1 class="mb-4 text-xl font-semibold">标签索引</h1>
+    <ul class="space-y-2">
+      {tagTree.map((tag) => <TagTreeNode node={tag} />)}
+    </ul>
+  </div>
+</BaseLayout>

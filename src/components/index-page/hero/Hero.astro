@@ -1,0 +1,71 @@
+---
+// Hero Component
+// Author: Reid
+// Description: Main hero section with avatar and animated text overlay
+// Created: 2026.2.18
+// License: MIT
+---
+
+<section class="flex justify-center items-start w-full relative overflow-hidden">
+  <!-- Background image -->
+  <!--<img-->
+  <!--  src=""-->
+  <!--  alt=""-->
+  <!--  class="absolute inset-0 w-full h-full object-cover z-0"-->
+  <!--/>-->
+  <div class="flex gap-4 md:gap-8 lg:gap-12 xl:gap-16 mt-2 relative z-10">
+    <!-- Left side: Avatar image -->
+    <div class="relative w-full group">
+      <img
+        src="/hero-avatar.png"
+        alt="Hero Avatar"
+        class="w-auto object-contain transition-transform duration-700 ease-out group-hover:scale-105"
+      />
+      <!-- Text overlay on right half of image -->
+      <div class="absolute top-1/2 left-1/2 transform -translate-y-1/2 translate-x-1/12 sm:translate-x-1/8 text-center px-0 sm:px-2 pr-8">
+        <div class="space-y-2 sm:space-y-3 cursor-pointer group" onclick="window.location.href='/about'">
+          <p class="vcr-font text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-800 animate-fade-in-up group-hover:text-gray-700 transition-colors">
+            Hola, soy
+          </p>
+          <h1 class="vcr-font text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold animate-fade-in-up animation-delay-200" style="color: var(--app-accent);">
+            <span class="inline-block bg-linear-to-r from-[var(--app-accent-hover)] via-[var(--app-accent)] to-[var(--app-focus)] bg-clip-text text-transparent group-hover:opacity-80 transition-opacity">
+              Reid
+            </span>
+          </h1>
+          <p class="vcr-font text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl text-gray-700 animate-fade-in-up animation-delay-400 group-hover:text-gray-600 transition-colors">
+            Engineer, Entrepreneur and Student
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Fade-in-up animation keyframes */
+  /* Creates smooth upward movement with opacity transition */
+  @keyframes fade-in-up {
+    from {
+      opacity: 0; /* Start invisible */
+      transform: translateY(20px); /* Start 20px below final position */
+    }
+    to {
+      opacity: 1; /* End fully visible */
+      transform: translateY(0); /* End at final position */
+    }
+  }
+  
+  /* Animation utility classes */
+  .animate-fade-in-up {
+    animation: fade-in-up 0.8s ease-out forwards; /* Apply fade-in-up animation with smooth easing */
+  }
+  
+  .animation-delay-200 {
+    animation-delay: 0.2s; /* Delay animation start by 200ms */
+  }
+  
+  .animation-delay-400 {
+    animation-delay: 0.4s; /* Delay animation start by 400ms */
+  }
+  
+</style>

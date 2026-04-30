@@ -1,0 +1,38 @@
+{
+  "name": "unTymen",
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check:test-layout": "node tools/check-test-layout.mjs",
+    "check:colors": "node tools/check-colors.mjs",
+    "check": "npm run check:test-layout && npm run check:colors && npm run build"
+  },
+  "dependencies": {
+    "@astrojs/preact": "^5.1.2",
+    "@astrojs/rss": "^4.0.18",
+    "@tailwindcss/vite": "^4.1.18",
+    "astro": "^6.1.10",
+    "daisyui": "^5.5.17",
+    "katex": "^0.16.45",
+    "pillow": "^0.0.9",
+    "preact": "^10.28.3",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0",
+    "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/preact": "^3.2.4",
+    "jsdom": "^26.1.0",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

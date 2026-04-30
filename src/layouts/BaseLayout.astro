@@ -1,0 +1,132 @@
+---
+import "../styles/global.css";
+import { ClientRouter } from "astro:transitions";
+import Dock from "../components/shared/dock/ui/Dock.astro";
+import PlayBot from "../components/shared/bot/PlayBot.astro";
+import Footer from "../components/shared/Footer.astro";
+import TerminalModal from "../components/shared/terminal/TerminalModal.astro";
+import Mobile from "../components/mobile/Mobile.astro";
+import DynamicIslandShell from "../components/shared/dynamic-island/DynamicIslandShell.astro";
+import { featureFlags } from "../config/features";
+
+interface Props {
+  pageTitle?: string;
+  contentWidth?: "5xl" | "6xl" | "7xl" | "full";
+  contentClass?: string;
+  mainClass?: string;
+  showChatFloat?: boolean;
+}
+
+const {
+  pageTitle = "",
+  contentWidth = "6xl",
+  contentClass = "",
+  mainClass = "",
+  showChatFloat = true,
+} = Astro.props as Props;
+
+const contentWidthClassMap = {
+  "5xl": "max-w-5xl",
+  "6xl": "max-w-6xl",
+  "7xl": "max-w-7xl",
+  full: "max-w-none",
+} as const;
+
+const contentWidthClass = contentWidthClassMap[contentWidth] ?? "max-w-6xl";
+---
+
+<html lang="zh-CN">
+  <head>
+    <script is:inline>
+      (() => {
+        try {
+          const key = "theme";
+          const stored = window.localStorage.getItem(key);
+          const preference =
+            stored === "light" || stored === "dark" || stored === "auto"
+              ? stored
+              : "auto";
+          const system = window.matchMedia("(prefers-color-scheme: dark)")
+            .matches
+            ? "dark"
+            : "light";
+          const resolved = preference === "auto" ? system : preference;
+          document.documentElement.setAttribute("data-theme", resolved);
+          document.documentElement.style.colorScheme = resolved;
+        } catch {
+          document.documentElement.setAttribute("data-theme", "light");
+          document.documentElement.style.colorScheme = "light";
+        }
+      })();
+    </script>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <ClientRouter />
+    <title>{pageTitle}</title>
+  </head>
+
+  <body class="tracking-wide text-base-content flex flex-col">
+    <!-- Global navigation -->
+    <Mobile />
+    <Dock pageTitle={pageTitle} currentPath={Astro.url.pathname} />
+    <DynamicIslandShell />
+
+    <!-- Terminal entry shell: mount point only, terminal internals stay in TerminalModal -->
+    {featureFlags.enableTerminal && (
+      <div
+        id="shortcut-overlay"
+        class="shortcut-overlay rounded-xl fixed inset-0 z-40 hidden flex items-center justify-center bg-[color-mix(in_srgb,var(--app-bg)_35%,black)] backdrop-blur-sm"
+        aria-hidden="true"
+      >
+        <TerminalModal />
+      </div>
+    )}
+
+    <!-- Main content -->
+    <main class={`w-full flex-1 ${mainClass}`.trim()}>
+      <div class={`site-content w-full mx-auto px-4 sm:px-6 lg:px-8 ${contentWidthClass} ${contentClass}`.trim()}>
+        <slot />
+      </div>
+    </main>
+
+    <!--Global footer -->
+    <Footer />
+
+    <!-- TODO: Add AIbot command to route AI assistant interactions via terminal. -->
+    {featureFlags.enablePlayBot && (
+      <div
+        id="chat-bot"
+        class="hidden md:block fixed left-0 bottom-0 z-70 w-50 h-50"
+      >
+        <PlayBot />
+      </div>
+    )}
+
+    <script>
+      import "../scripts/globalShortcuts.js";
+      import { initTheme } from "../scripts/theme/themeManager.ts";
+      import { registerAppServiceWorker } from "../scripts/registerSw";
+
+      initTheme();
+      registerAppServiceWorker();
+
+      // Handle dock reveal hint toast
+      window.addEventListener('dock:show-reveal-hint', () => {
+        const toast = document.createElement('div');
+        toast.className = 'fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-base-100 text-base-content px-4 py-3 rounded-lg shadow-lg border border-base-200 z-50 animate-fade-in-up';
+        toast.textContent = '↑ 向上滑动或点击底部显示菜单';
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transition = 'opacity 0.3s ease-out';
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      });
+    </script>
+  </body>
+</html>

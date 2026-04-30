@@ -1,0 +1,17 @@
+{
+  "include": [
+    "src/components/shared/dock/**/*.ts"
+  ],
+  "compilerOptions": {
+    "target": "ES2019",
+    "module": "ES2020",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2019", "DOM"],
+    "rootDir": "src/components/shared/dock",
+    "outDir": "dist/dock",
+    "declaration": false,
+    "sourceMap": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  }
+}

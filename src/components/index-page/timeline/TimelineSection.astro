@@ -1,0 +1,92 @@
+---
+import type { TimelineEntry } from "../../../data/development.ts";
+import TimelineRevealIsland from "./TimelineRevealIsland";
+
+interface TimelineSectionProps {
+  entries: TimelineEntry[];
+  title?: string;
+  subtitle?: string;
+  tagLabel?: string;
+}
+
+const {
+  entries,
+  title = "Development Timeline",
+  subtitle = "记录该模块的开发里程碑。",
+  tagLabel = "console log",
+} = Astro.props as TimelineSectionProps;
+
+const displayEntries = entries;
+---
+
+<section class="rounded-3xl p-6">
+  <div class="mb-6 flex flex-wrap items-center gap-4">
+    <div>
+      <h3 class="text-2xl font-semibold">{title}</h3>
+      <p class="text-sm">{subtitle}</p>
+    </div>
+    <span
+      class="ml-auto rounded-full border px-3 py-1 text-xs"
+      style="border-color: color-mix(in srgb, var(--app-accent) 40%, transparent); box-shadow: inset 0 0 20px color-mix(in srgb, var(--app-accent) 15%, transparent);"
+    >
+      {tagLabel}
+    </span>
+  </div>
+
+  <div>
+    {displayEntries.map((entry, index) => {
+      const isLast = index === displayEntries.length - 1;
+      const padding = index === 0 ? "pt-0" : "pt-6";
+      return (
+        <article class={`reveal-entry ${padding} translate-y-8 opacity-0 transition-all duration-1000 ease-out`}>
+          <div class="flex gap-4">
+            <div class="flex flex-col items-center">
+              <span
+                class="h-2 w-2 rounded-full"
+                style="background-color: var(--app-accent); box-shadow: 0 0 8px color-mix(in srgb, var(--app-accent) 60%, transparent);"
+              ></span>
+              {!isLast && (
+                <span
+                  class="mt-2 h-full w-px"
+                  style="background-color: color-mix(in srgb, var(--app-accent) 40%, transparent);"
+                ></span>
+              )}
+            </div>
+
+            <div
+              class="flex-1 space-y-2 border-l pl-4"
+              style="border-color: color-mix(in srgb, var(--app-accent) 10%, transparent);"
+            >
+              <div
+                class="flex flex-wrap items-center justify-between gap-2 text-xs uppercase tracking-[0.3em]"
+                style="color: var(--app-accent);"
+              >
+                <span>{entry.date}</span>
+                <span
+                  class="rounded-full border px-3 py-1 text-[10px]"
+                  style="border-color: color-mix(in srgb, var(--app-accent) 40%, transparent);"
+                >
+                  {entry.tag}
+                </span>
+              </div>
+              <h4 class="text-lg font-semibold">{entry.title}</h4>
+              <p class="text-sm">{entry.summary}</p>
+              <ul class="space-y-1 text-sm">
+                {entry.details.map((detail) => (
+                  <li class="flex items-start gap-2">
+                    <span
+                      class="mt-1 h-1.5 w-1.5 rounded-full"
+                      style="background-color: var(--app-accent);"
+                    ></span>
+                    <span>{detail}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </article>
+      );
+    })}
+  </div>
+</section>
+<TimelineRevealIsland client:load />

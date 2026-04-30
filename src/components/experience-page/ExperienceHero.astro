@@ -1,0 +1,68 @@
+---
+import type { ActionLinks, HeroProfile } from "../../data/experience";
+
+interface Props {
+  profile: HeroProfile;
+  links: ActionLinks;
+}
+
+const { profile, links } = Astro.props as Props;
+// use a non-typed access to avoid stale type errors in the Astro compiler
+const avatarSrc = (profile as any).avatar ?? "/avatars/default.png";
+---
+
+<header
+  id="hero"
+  class="border-b border-slate-300 pb-8 min-h-[60svh] lg:min-h-[calc(70svh-6rem)]"
+>
+  <div class="grid grid-cols-1 lg:grid-cols-[160px_1fr] gap-6 items-center py-6">
+    <div class="flex items-center justify-center">
+      <div class="w-36 h-36 lg:w-44 lg:h-44 rounded-lg overflow-hidden border border-slate-200 bg-white shadow-sm">
+        <img src={avatarSrc} alt={`${profile.name} avatar`} class="w-full h-full object-cover" />
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-5">
+      <div>
+        <h1 class="text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">{profile.name}</h1>
+        <p class="mt-2 text-sm font-medium uppercase tracking-[0.16em] text-slate-600 sm:text-base">
+          {profile.line2} | {profile.line3}
+        </p>
+      </div>
+
+      <div class="max-w-3xl border border-slate-300/90 bg-slate-50/40 p-5">
+        <h2 class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-700">
+          {profile.researchTitle}
+        </h2>
+        <ul class="mt-3 list-disc pl-5 text-slate-700">
+          {profile.researchBullets.map((item) => <li class="leading-7">{item}</li>)}
+        </ul>
+        <p class="mt-3 leading-7 text-slate-700">{profile.closing}</p>
+      </div>
+
+      <div class="flex flex-wrap gap-2.5">
+        <a
+          href={links.githubUrl}
+          target="_blank"
+          rel="noreferrer noopener"
+          class="inline-flex h-9 items-center border border-slate-400 px-3 text-sm text-slate-800 transition hover:border-slate-700 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+        >
+          GitHub
+        </a>
+        <a
+          href={links.cvUrl}
+          download="mr-woo-cv.md"
+          class="inline-flex h-9 items-center border border-slate-400 px-3 text-sm text-slate-800 transition hover:border-slate-700 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+        >
+          Download CV
+        </a>
+        <a
+          href={links.email}
+          class="inline-flex h-9 items-center border border-slate-400 px-3 text-sm text-slate-800 transition hover:border-slate-700 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+        >
+          Email
+        </a>
+      </div>
+    </div>
+  </div>
+</header>

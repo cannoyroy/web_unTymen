@@ -1,0 +1,23 @@
+---
+interface Props {
+  hasToc?: boolean;
+}
+
+const { hasToc = true } = Astro.props as Props;
+---
+
+<section class="post-shell py-6 md:py-10">
+  <div class:list={["grid gap-8", hasToc ? "lg:grid-cols-[minmax(0,1fr)_280px]" : ""]}>
+    <article id="post-article-content" class="min-w-0">
+      <slot name="main" />
+    </article>
+
+    {hasToc && (
+      <aside class="hidden lg:block">
+        <div class="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto">
+          <slot name="toc" />
+        </div>
+      </aside>
+    )}
+  </div>
+</section>

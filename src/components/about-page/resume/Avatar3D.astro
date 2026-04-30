@@ -1,0 +1,28 @@
+<figure class="resume-avatar">
+  <img src="/avatars/default.png" alt="resume avatar" loading="lazy" />
+</figure>
+
+<style>
+  .resume-avatar {
+    margin: 0 auto;
+    width: min(100%, 172px);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--color-base-content) 12%, transparent);
+    background: color-mix(in srgb, var(--color-base-200) 45%, var(--color-base-100));
+  }
+
+  .resume-avatar img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+  }
+
+  @media (max-width: 640px) {
+    .resume-avatar {
+      width: min(100%, 84px);
+      border-radius: 0.5rem;
+    }
+  }
+</style>

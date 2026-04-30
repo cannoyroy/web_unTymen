@@ -1,0 +1,42 @@
+---
+// ContentView.astro - Shared layout frame for Article and Moment views
+import ContentHeader from "./ContentHeader.astro";
+
+interface Props {
+  viewId: string;
+  title: string;
+  count?: number;
+  hidden?: boolean;
+  fullWidth?: boolean;
+}
+
+const {
+  viewId,
+  title,
+  count,
+  hidden = false,
+  fullWidth = false,
+} = Astro.props;
+---
+
+<section id={viewId} class={`view-section w-full gap-3 sm:px-4 ${fullWidth ? "md:px-6" : ""} ${hidden ? "hidden" : ""}`}>
+  <!-- Header-->
+  <div class="content-header p-4 sticky top-0 flex justify-between items-center text-gray-400">
+    <ContentHeader title={title} count={count}>
+      <slot name="header-right" slot="header-right" />
+    </ContentHeader>
+  </div>
+
+  <!-- Main Content Slot -->
+  <div class={`content-body ${fullWidth ? "" : "blog-view-inner"}`}>
+    <slot />
+  </div>
+</section>
+
+
+
+
+
+
+
+

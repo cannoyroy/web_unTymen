@@ -1,0 +1,25 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import TimelineSection from "../components/index-page/timeline/TimelineSection.astro";
+import { myTimeline } from "../data/development";
+
+const pageTitle = "This Site | Reid";
+---
+
+<BaseLayout pageTitle={pageTitle} showChatFloat={false}>
+  <!-- Website Development Timeline -->
+  <section class="py-12">
+    <div class="mb-8">
+      <h2 class="text-2xl font-bold text-base-content mb-2">网站开发历程</h2>
+      <p class="text-sm text-base-content/60">
+        本网站基于 <a href="https://github.com/elonwoo-02/elon-kernel" target="_blank" class="link link-primary">elonwoo-02/elon-kernel</a> 项目改造
+      </p>
+    </div>
+    <TimelineSection
+      entries={myTimeline}
+      title=""
+      subtitle=""
+      tagLabel="development"
+    />
+  </section>
+</BaseLayout>

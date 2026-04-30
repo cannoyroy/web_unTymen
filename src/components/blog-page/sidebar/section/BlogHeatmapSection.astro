@@ -1,0 +1,48 @@
+---
+import BlogHeatmapGridIsland from "../BlogHeatmapGridIsland";
+import BlogHeatmapDetailsIsland from "../BlogHeatmapDetailsIsland";
+import type { HeatmapMatrix } from "../heatmap/types";
+
+interface Props {
+  heatmap: HeatmapMatrix;
+  initialSelectedDate: string;
+}
+
+const { heatmap, initialSelectedDate } = Astro.props as Props;
+---
+
+<div class="heatmap-section p-4">
+  <div class="mb-2 flex items-center justify-between px-2">
+    <h3 class="text-xs font-bold uppercase tracking-wider text-base-content/40">Recent 12 Weeks</h3>
+    <span class="text-[10px] text-base-content/45">12 x 7</span>
+  </div>
+
+  <BlogHeatmapGridIsland
+    client:load
+    heatmap={heatmap}
+    initialSelectedDate={initialSelectedDate}
+  />
+  <BlogHeatmapDetailsIsland
+    client:load
+    heatmap={heatmap}
+    initialSelectedDate={initialSelectedDate}
+  />
+</div>
+
+<style>
+  :global(.hm-level-0) {
+    background-color: var(--app-border);
+  }
+  :global(.hm-level-1) {
+    background-color: var(--app-accent-soft);
+  }
+  :global(.hm-level-2) {
+    background-color: var(--app-focus);
+  }
+  :global(.hm-level-3) {
+    background-color: var(--app-accent-hover);
+  }
+  :global(.hm-level-4) {
+    background-color: var(--app-accent);
+  }
+</style>

@@ -1,0 +1,116 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/index-page/hero/Hero.astro";
+import NewsletterSignup from "../components/shared/NewsletterSignup.astro";
+
+const pageTitle = "Home";
+
+// 获取最新 3 篇非草稿博文
+const allPosts = await getCollection('blog');
+const publishedPosts = allPosts
+  .filter(post => !post.data.draft)
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .slice(0, 3);
+
+const formatTime = (date: Date) => {
+  return date.toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+};
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <div class="index-theme-legacy">
+    <!-- Hero Component -->
+    <Hero />
+
+    <!-- Divider -->
+    <div class="w-full h-0.5 bg-linear-to-r from-transparent via-gray-300 to-transparent my-12"></div>
+
+    <!-- Latest Articles Section -->
+    <section class="py-8">
+      <h2 class="text-2xl font-bold mb-6 text-base-content">最新文章</h2>
+      <div class="grid gap-4">
+        {publishedPosts.map((post) => (
+          <article
+            class="bg-base-100 rounded-xl p-5 shadow-sm border border-base-200/60 hover:shadow-md transition-shadow cursor-pointer"
+            onclick={`window.location.href='/posts/${post.id}/'`}
+          >
+            <div class="flex items-start justify-between mb-3">
+              <div class="flex-1">
+                <h3 class="text-lg font-bold text-base-content/90 mb-1 hover:text-[var(--app-accent-hover)] transition-colors">
+                  <a href={`/posts/${post.id}/`} class="focus:outline-none">
+                    {post.data.title}
+                  </a>
+                </h3>
+                {post.data.description && (
+                  <p class="text-sm text-base-content/70 leading-relaxed mb-2">
+                    {post.data.description}
+                  </p>
+                )}
+              </div>
+              <time class="text-xs text-base-content/40 font-mono whitespace-nowrap ml-4">
+                {formatTime(post.data.pubDate)}
+              </time>
+            </div>
+            {post.data.tags.length > 0 && (
+              <div class="flex flex-wrap gap-2">
+                {post.data.tags.slice(0, 3).map((tag) => (
+                  <span class="text-xs text-[var(--app-accent)] bg-[var(--app-accent-soft)] px-2 py-1 rounded">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </article>
+        ))}
+      </div>
+      <div class="mt-6 text-center">
+        <a href="/blog" class="btn btn-outline">查看全部文章</a>
+      </div>
+    </section>
+
+    <!-- Divider -->
+    <div class="w-full h-0.5 bg-linear-to-r from-transparent via-gray-300 to-transparent my-12"></div>
+
+    <!-- Quick Navigation Section -->
+    <section class="py-8">
+      <h2 class="text-2xl font-bold mb-6 text-base-content">快速导航</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <a href="/about" class="bg-base-100 rounded-xl p-6 shadow-sm border border-base-200/60 hover:shadow-md hover:border-[var(--app-accent)]/30 transition-all group">
+          <div class="text-3xl mb-3">👤</div>
+          <h3 class="text-lg font-bold text-base-content/90 group-hover:text-[var(--app-accent-hover)] transition-colors">About</h3>
+          <p class="text-sm text-base-content/70 mt-2">研究、项目与论文</p>
+        </a>
+        <a href="/blog" class="bg-base-100 rounded-xl p-6 shadow-sm border border-base-200/60 hover:shadow-md hover:border-[var(--app-accent)]/30 transition-all group">
+          <div class="text-3xl mb-3">📝</div>
+          <h3 class="text-lg font-bold text-base-content/90 group-hover:text-[var(--app-accent-hover)] transition-colors">Blog</h3>
+          <p class="text-sm text-base-content/70 mt-2">阅读我的文章与思考</p>
+        </a>
+        <a href="/site" class="bg-base-100 rounded-xl p-6 shadow-sm border border-base-200/60 hover:shadow-md hover:border-[var(--app-accent)]/30 transition-all group">
+          <div class="text-3xl mb-3">🛠️</div>
+          <h3 class="text-lg font-bold text-base-content/90 group-hover:text-[var(--app-accent-hover)] transition-colors">This Site</h3>
+          <p class="text-sm text-base-content/70 mt-2">关于本站与开发历程</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="py-8">
+      <NewsletterSignup
+        source="home-footer"
+        title="订阅更新"
+        description="新文章发布后会通过邮件通知你。"
+      />
+    </section>
+  </div>
+
+  <style is:global>
+    .index-theme-legacy {
+      color: var(--app-text);
+    }
+  </style>
+</BaseLayout>

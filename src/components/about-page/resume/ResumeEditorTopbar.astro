@@ -1,0 +1,59 @@
+<div class="editor-top flex items-center gap-2">
+  <span class="dot red"></span>
+  <span class="dot yellow"></span>
+  <span class="dot green"></span>
+  <span class="tab-name ml-2" id="resume-tab-name">resume.go</span>
+
+  <div class="lang-switcher ml-auto flex items-center gap-2 text-xs">
+    <label for="resume-language">Display</label>
+    <select id="resume-language" aria-label="Select resume language">
+      <option value="python">Python</option>
+      <option value="go">Go</option>
+      <option value="zh">Chinese</option>
+    </select>
+  </div>
+</div>
+
+<style>
+  .editor-top .dot {
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in srgb, var(--color-base-content) 22%, transparent);
+  }
+
+  .editor-top .dot.red {
+    background: color-mix(in srgb, var(--color-error) 80%, var(--color-base-100));
+  }
+
+  .editor-top .dot.yellow {
+    background: color-mix(in srgb, var(--color-warning) 82%, var(--color-base-100));
+  }
+
+  .editor-top .dot.green {
+    background: color-mix(in srgb, var(--color-success) 82%, var(--color-base-100));
+  }
+
+  .editor-top .tab-name {
+    font-family: "Cascadia Code", "JetBrains Mono", "Consolas", monospace;
+    font-size: 0.8rem;
+    color: color-mix(in srgb, var(--color-base-content) 86%, transparent);
+  }
+
+  .editor-top .lang-switcher label {
+    color: color-mix(in srgb, var(--color-base-content) 60%, transparent);
+  }
+
+  .editor-top .lang-switcher select {
+    border: 1px solid color-mix(in srgb, var(--color-base-content) 16%, transparent);
+    background-color: color-mix(in srgb, var(--color-base-100) 88%, transparent);
+    color: color-mix(in srgb, var(--color-base-content) 88%, transparent);
+    border-radius: 0.5rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .editor-top .lang-switcher select:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--color-primary) 55%, transparent);
+    outline-offset: 1px;
+  }
+</style>

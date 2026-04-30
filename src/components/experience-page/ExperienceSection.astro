@@ -1,0 +1,21 @@
+---
+interface Props {
+  id: "research" | "projects" | "publications";
+  title: string;
+  subtitle?: string;
+}
+
+const { id, title, subtitle } = Astro.props as Props;
+---
+
+<section
+  id={id}
+  data-experience-section={id}
+  class="scroll-mt-28 border-t border-slate-300/90 pt-7"
+>
+  <header class="mb-5">
+    <h2 class="text-[1.65rem] font-semibold tracking-tight text-slate-900">{title}</h2>
+    {subtitle && <p class="mt-1.5 text-sm leading-6 text-slate-600">{subtitle}</p>}
+  </header>
+  <slot />
+</section>

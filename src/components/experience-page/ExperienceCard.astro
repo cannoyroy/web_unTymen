@@ -1,0 +1,52 @@
+---
+/**
+ * ExperienceCard.astro
+ * A small reusable card component for project/publication/research items.
+ * Props:
+ *  - type: 'project' | 'publication' | 'research'
+ *  - item: any (shape depends on type)
+ *  - index?: number (for stagger)
+ */
+interface Props {
+  type: "project" | "publication" | "research";
+  item: any;
+  index?: number;
+}
+
+const { type, item, index = 0 } = Astro.props as Props;
+---
+
+<article class="card reveal opacity-0 translate-y-2 transition-opacity transition-transform duration-300 ease-out border border-slate-300/95 bg-slate-50/45 p-5 rounded-lg">
+  <div class="flex flex-wrap items-baseline justify-between gap-2">
+    <h3 class="text-lg font-semibold tracking-tight text-slate-900">{item.title}</h3>
+    {type === 'project' && <p class="text-sm text-slate-600">{item.period}</p>}
+    {type === 'publication' && <p class="text-sm text-slate-600">{item.year}</p>}
+  </div>
+
+  <p class="mt-2.5 leading-7 text-slate-700">{item.summary ?? item.venue ?? ''}</p>
+
+  {type === 'project' && item.tech && (
+    <p class="mt-3 text-sm text-slate-600">
+      <span class="font-semibold uppercase tracking-wide text-slate-700">Tech</span>: {item.tech.join(", ")}
+    </p>
+  )}
+
+  {type === 'research' && item.keywords && (
+    <ul class="mt-4 flex flex-wrap gap-2">
+      {item.keywords.map((keyword: string) => (
+        <li class="border border-slate-300 bg-white/60 px-2 py-1 text-xs tracking-wide text-slate-600">{keyword}</li>
+      ))}
+    </ul>
+  )}
+
+  {item.link && (
+    <a
+      href={item.link}
+      target="_blank"
+      rel="noreferrer noopener"
+      class="inline-flex mt-4 h-9 items-center border border-slate-400 px-3 text-sm text-slate-800 transition hover:border-slate-700 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+    >
+      View
+    </a>
+  )}
+</article>

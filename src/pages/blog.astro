@@ -1,0 +1,135 @@
+﻿---
+import "../styles/global.css";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import BlogDrawerSidebar from "../components/blog-page/sidebar/BlogDrawerSidebar.astro";
+// import MomentView from "../components/blog-page/content/views/MomentView.astro";
+import ArticleView from "../components/blog-page/content/views/ArticleView.astro";
+// import NoteView from "../components/blog-page/content/views/NoteView.astro";
+// import ContentViewSwitcherIsland from "../components/blog-page/content/ContentViewSwitcherIsland";
+// import { notes } from "../data/notes";
+// import { moments } from "../data/moments";
+import {
+  buildHeatmapMatrix,
+  collectActivityRecords,
+  DEFAULT_HEATMAP_WEEKS,
+} from "../components/blog-page/sidebar/heatmap/buildHeatmapData";
+
+const allPosts = await getCollection("blog");
+const sortedPosts = [...allPosts].sort(
+  (a, b) =>
+    new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime(),
+);
+
+const pinnedPosts = sortedPosts.filter((post) => post.data.docked);
+
+const totalPosts = sortedPosts.length;
+const uniqueTags = new Set(sortedPosts.flatMap((post) => post.data.tags));
+const totalTags = uniqueTags.size;
+
+const firstPostDate =
+  sortedPosts.length > 0
+    ? new Date(sortedPosts[sortedPosts.length - 1].data.pubDate)
+    : new Date();
+const daysActive =
+  Math.floor(
+    (new Date().getTime() - firstPostDate.getTime()) / (1000 * 60 * 60 * 24),
+  ) + 1;
+
+const activityRecords = collectActivityRecords({
+  posts: sortedPosts,
+  notes: [],
+  moments: [],
+});
+const heatmap = buildHeatmapMatrix(activityRecords, new Date(), DEFAULT_HEATMAP_WEEKS);
+const flattenedHeatmap = heatmap.flat();
+const initialSelectedDate =
+  flattenedHeatmap[flattenedHeatmap.length - 1]?.date ??
+  new Date().toISOString().slice(0, 10);
+---
+
+<BaseLayout pageTitle="unTymen's blog">
+  <div
+    id="blog-wrapper"
+    class="p-2 flex h-screen overflow-hidden"
+    style="transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);"
+  >
+    <BlogDrawerSidebar
+      heatmap={heatmap}
+      initialSelectedDate={initialSelectedDate}
+      stats={{ totalPosts, totalTags, daysActive }}
+      tags={Array.from(uniqueTags)}
+    />
+
+    <div
+      id="main-content"
+      class="blog-page blog-page--index-theme relative flex-1 min-w-0 h-full overflow-y-scroll"
+      style="transition: background-color 500ms; scroll-behavior: smooth;"
+    >
+      <ArticleView pinnedPosts={pinnedPosts} sortedPosts={sortedPosts} />
+      <!-- <MomentView />
+      <NoteView hidden={true} />
+      <ContentViewSwitcherIsland client:load defaultView="article" /> -->
+
+      <div id="toast" class="toast hidden" role="status" aria-live="polite">
+        <div class="toast-surface">Copied link</div>
+      </div>
+
+      <style is:global>
+        .blog-page {
+          height: 100%;
+        }
+
+        #blog-wrapper {
+          height: 100vh;
+          overflow: hidden;
+          align-items: stretch;
+        }
+
+        @media (max-width: 767px) {
+          #main-content {
+            width: 100%;
+          }
+
+          .blog-page .blog-view-inner {
+            max-width: none;
+          }
+        }
+
+        html:has(.blog-page),
+        body:has(.blog-page) {
+          scrollbar-width: none !important;
+          -ms-overflow-style: none !important;
+        }
+
+        html:has(.blog-page)::-webkit-scrollbar,
+        body:has(.blog-page)::-webkit-scrollbar {
+          display: none !important;
+          width: 0 !important;
+          height: 0 !important;
+        }
+
+        .blog-page,
+        #main-content {
+          scrollbar-width: none !important;
+          -ms-overflow-style: none !important;
+          scrollbar-gutter: stable;
+        }
+
+        .blog-page::-webkit-scrollbar,
+        #main-content::-webkit-scrollbar {
+          display: none !important;
+          width: 0 !important;
+          height: 0 !important;
+        }
+
+        .blog-page .blog-view-inner {
+          width: 100%;
+          max-width: 920px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+      </style>
+    </div>
+  </div>
+</BaseLayout>

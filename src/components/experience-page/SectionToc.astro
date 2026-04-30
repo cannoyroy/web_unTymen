@@ -1,0 +1,63 @@
+---
+import type { ExperienceSectionRef } from "../../data/experience";
+
+interface Props {
+  sections: ExperienceSectionRef[];
+}
+
+const { sections } = Astro.props as Props;
+---
+
+<div class="lg:sticky lg:top-24">
+  <!-- Mobile toggle button -->
+  <div class="lg:hidden mb-3">
+    <button
+      type="button"
+      data-toc-toggle
+      aria-controls="experience-toc-panel"
+      aria-expanded="false"
+      class="inline-flex items-center gap-2 rounded-md border border-slate-300/90 bg-slate-50/35 px-3 py-2 text-sm text-slate-700"
+    >
+      Table of contents
+    </button>
+  </div>
+
+  <!-- Panel: hidden on small screens by default; visible on lg -->
+  <div
+    id="experience-toc-panel"
+    data-toc-panel
+    class="hidden lg:block border border-slate-300/90 bg-slate-50/35 p-4"
+    aria-hidden="true"
+  >
+    <!-- Close button for mobile overlay -->
+    <div class="flex items-center justify-between mb-3 lg:hidden">
+      <p class="mb-0 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">On This Page</p>
+      <button
+        type="button"
+        data-toc-close
+        aria-label="Close table of contents"
+        class="inline-flex items-center gap-2 rounded-md border border-transparent bg-transparent px-2 py-1 text-sm text-slate-700"
+      >
+        Close
+      </button>
+    </div>
+
+    <nav aria-label="Experience sections">
+      <p class="hidden lg:block mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">On This Page</p>
+      <ul class="space-y-1.5">
+        {sections.map((section) => (
+          <li>
+            <a
+              href={`#${section.id}`}
+              data-toc-link
+              data-target-id={section.id}
+              class="inline-flex w-full border-l-2 border-transparent py-1.5 pl-3 text-sm text-slate-500 transition hover:border-slate-500 hover:text-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
+            >
+              {section.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</div>

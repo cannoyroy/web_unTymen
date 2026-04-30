@@ -1,0 +1,106 @@
+---
+// NoteView.astro - Micro-notes list layout
+import { notes } from '../../../../data/notes.ts';
+import ContentView from '../ContentView.astro';
+import TagFilterIsland from "../TagFilterIsland";
+
+interface Props {
+  hidden?: boolean;
+}
+
+const { hidden = false } = Astro.props;
+
+// Sort notes by date descending
+const sortedNotes = [...notes].sort((a, b) => b.date.getTime() - a.date.getTime());
+
+// Helper to expand tag paths (consistent with ArticleView)
+const expandTagPaths = (tag: string) => {
+  const segments = tag.split('/').map((s) => s.trim()).filter(Boolean);
+  return segments.map((_, i) => segments.slice(0, i + 1).join('/'));
+};
+
+const getNoteTagPaths = (tags: string[]) =>
+  [...new Set(tags.flatMap((tag) => expandTagPaths(tag)))].join('|');
+
+const formatTime = (date: Date) => {
+  return date.toLocaleDateString('zh-CN', { 
+    year: 'numeric', 
+    month: '2-digit', 
+    day: '2-digit' 
+  }) + ' ' + date.toLocaleTimeString('zh-CN', { 
+    hour: '2-digit', 
+    minute: '2-digit' 
+  });
+};
+---
+
+<ContentView 
+  viewId="note-view" 
+  title="NOTE" 
+  count={sortedNotes.length}
+  hidden={hidden}
+>
+  <Fragment slot="header-right">
+  </Fragment>
+
+    <section id="note-list" class="note-list w-full space-y-4">
+    {sortedNotes.map((note) => (
+      <article
+        class="note-card bg-base-100 rounded-xl p-5 shadow-sm border border-base-200/60"
+        data-note-card
+        data-tags={getNoteTagPaths(note.tags)}
+      >
+        <!-- Time meta -->
+        <div class="flex items-center justify-between mb-3 text-xs text-base-content/40 font-mono border-b border-base-100 pb-2">
+           <time datetime={note.date.toISOString()}>
+             {formatTime(note.date)}
+           </time>
+        </div>
+
+        <!-- Title -->
+        <div class="mb-3">
+           <span class="font-bold px-1.5 py-0">
+               {note.title}
+           </span>
+        </div>
+
+        <!-- Tags -->
+        <div class="flex flex-wrap gap-2">
+          {note.tags.map((tag) => (
+            <button class="note-tag-btn text-xs text-[var(--app-accent)] hover:text-[var(--app-accent-hover)] hover:bg-[var(--app-accent-soft)] px-1.5 rounded transition-colors" data-tag={tag}>
+              #{tag}
+            </button>
+          ))}
+        </div>
+
+        <!-- Content -->
+        <div class="my-3 text-sm text-base-content/80 leading-relaxed whitespace-pre-wrap">
+          {note.content}
+        </div>
+
+      </article>
+    ))}
+    </section>
+
+
+  <!-- Empty state -->
+  <div id="note-empty-state" class="hidden flex flex-col items-center justify-center py-20 text-center">
+     <div class="w-16 h-16 rounded-full bg-base-200/50 flex items-center justify-center mb-4 text-base-content/30">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+     </div>
+     <p class="text-base-content/60">No notes found.</p>
+     <button id="note-clear-tag-filter-empty" class="btn btn-link btn-sm mt-2 text-primary">Show all</button>
+  </div>
+</ContentView>
+<TagFilterIsland
+  client:load
+  tagButtonSelector=".note-tag-btn"
+  cardSelector="[data-note-card]"
+  emptyStateId="note-empty-state"
+  clearButtonIds={["note-clear-tag-filter", "note-clear-tag-filter-empty"]}
+  activeTagPanelId="note-active-tag-panel"
+  activeTagNameId="note-active-tag-name"
+  includeSidebarTagState={true}
+/>

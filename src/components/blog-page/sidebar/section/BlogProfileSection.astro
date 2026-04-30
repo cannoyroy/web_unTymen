@@ -1,0 +1,62 @@
+---
+const { stats } = Astro.props;
+---
+
+<div class="px-6 pt-2 pb-4">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 rounded-full bg-gray-200 overflow-hidden">
+        <img
+          src="/avatars/default.png"
+          alt="User Avatar"
+          class="w-full h-full object-cover opacity-80"
+        />
+      </div>
+      <div>
+        <div class="text-base font-bold text-base-content/90 leading-tight">
+            Reid
+        </div>
+        <div class="text-xs text-base-content/40 mt-0.5">
+          untymen@163.com
+        </div>
+      </div>
+      <span
+        class="ml-auto px-1.5 py-0.5 bg-yellow-100 text-yellow-700 text-[10px] font-bold uppercase rounded border border-yellow-200/50"
+        >
+        ·ONLINE·
+      </span
+      >
+    </div>
+
+    <div class="flex justify-between px-2 mt-2">
+      <div class="text-center">
+        <div class="text-xl font-bold text-base-content/80 leading-none">
+          {stats.totalPosts}
+        </div>
+        <div
+          class="text-[10px] text-base-content/40 font-bold uppercase mt-1"
+        >
+          ARTICLE
+        </div>
+      </div>
+      <div class="text-center">
+        <div class="text-xl font-bold text-base-content/80 leading-none">
+          {stats.totalTags}
+        </div>
+        <div
+          class="text-[10px] text-base-content/40 font-bold uppercase mt-1"
+        >
+          TAG
+        </div>
+      </div>
+      <div class="text-center">
+        <div class="text-xl font-bold text-base-content/80 leading-none">
+          {stats.daysActive}
+        </div>
+        <div
+          class="text-[10px] text-base-content/40 font-bold uppercase mt-1"
+        >
+          DAY
+        </div>
+      </div>
+    </div>
+</div>

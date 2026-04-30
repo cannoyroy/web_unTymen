@@ -1,0 +1,29 @@
+---
+
+import DrawerIcon from "../../../shared/icons/blog/DrawerIcon.astro";
+import SettingIcon from "../../../shared/icons/blog/SettingIcon.astro";
+import NotificationIcon from "../../../shared/icons/blog/NotificationIcon.astro";---
+<!-- Left: Sidebar Toggle (Close) -->
+  <button
+    id="drawer-close"
+    class="p-2 rounded-xl transition-all duration-200 group"
+    aria-label="Close Sidebar"
+  >
+    <DrawerIcon/>
+  </button>
+
+  <!-- Right: Actions -->
+  <div class="flex items-center gap-1">
+    <!-- Notification -->
+    <button
+      class="p-2 hover:bg-base-200 hover:text-gray-600 rounded-lg transition-colors"
+    >
+      <NotificationIcon/>
+    </button>
+    <!-- Settings -->
+    <button
+      class="p-2 hover:bg-base-200 hover:text-gray-600 rounded-lg transition-colors"
+    >
+      <SettingIcon/>
+    </button>
+  </div>

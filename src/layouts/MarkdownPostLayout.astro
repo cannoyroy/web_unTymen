@@ -1,0 +1,106 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import PostShell from "../components/blog-page/post/PostShell.astro";
+import PostHeader from "../components/blog-page/post/PostHeader.astro";
+import PostToc from "../components/blog-page/post/PostToc.astro";
+import PostContent from "../components/blog-page/post/PostContent.astro";
+import PostTocIsland from "../components/blog-page/post/PostTocIsland";
+import PostProgressIsland from "../components/blog-page/post/PostProgressIsland";
+import NewsletterSignup from "../components/shared/NewsletterSignup.astro";
+
+type HeadingItem = {
+  depth: number;
+  slug: string;
+  text: string;
+};
+
+const {
+  frontmatter,
+  headings = [],
+  readingTime = 1,
+} = Astro.props as {
+  frontmatter: {
+    title: string;
+    pubDate: Date;
+    description: string;
+    author: string;
+    image?: {
+      url: string;
+      alt: string;
+    };
+    tags?: string[];
+  };
+  headings?: HeadingItem[];
+  readingTime?: number;
+};
+
+const tocHeadings = (headings ?? []).filter(
+  (heading) => heading.depth >= 2 && heading.depth <= 3 && heading.slug && heading.text,
+);
+const hasToc = tocHeadings.length > 0;
+---
+
+<BaseLayout pageTitle={frontmatter.title} mainClass="pt-16 md:pt-8" showChatFloat={false}>
+  <div class="post-progress" aria-hidden="true">
+    <span id="reading-progress"></span>
+  </div>
+
+  <PostShell hasToc={hasToc}>
+    <div slot="main">
+      {hasToc && (
+        <details class="mb-6 border border-slate-300/90 bg-slate-50/30 p-3 lg:hidden">
+          <summary class="cursor-pointer text-sm font-semibold text-slate-700">章节导航</summary>
+          <div class="mt-3">
+            <PostToc headings={tocHeadings} title="目录" />
+          </div>
+        </details>
+      )}
+
+      <PostHeader frontmatter={frontmatter} readingTime={readingTime} />
+
+      <PostContent>
+        <slot />
+      </PostContent>
+
+      <div class="mt-10">
+        <NewsletterSignup
+          source="post-end"
+          title="Enjoyed this post?"
+          description="Subscribe to get future posts by email."
+        />
+      </div>
+    </div>
+
+    {hasToc && (
+      <div slot="toc">
+        <PostToc headings={tocHeadings} />
+      </div>
+    )}
+  </PostShell>
+
+  <PostProgressIsland client:load />
+  {hasToc && <PostTocIsland client:load />}
+</BaseLayout>
+
+<style>
+  .post-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 90;
+    height: 3px;
+  }
+
+  #reading-progress {
+    display: block;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(
+      90deg,
+      var(--app-accent-hover),
+      var(--app-accent)
+    );
+    transition: width 0.1s linear;
+  }
+</style>

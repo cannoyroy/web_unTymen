@@ -1,0 +1,105 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  exclude: properties;
+}
+
+:root,
+html[data-theme="light"] {
+  --app-bg: #f0eee9;
+  --app-surface: #fbfaf8;
+  --app-surface-2: #f3f1ec;
+  --app-text: #1b2730;
+  --app-text-muted: #5a6a75;
+  --app-border: #d8d4cc;
+  --app-accent: #6f97ae;
+  --app-accent-hover: #5e879f;
+  --app-accent-soft: #dce7ed;
+  --app-accent-contrast: #f6fafc;
+  --app-link: #5b839b;
+  --app-focus: #8fb1c4;
+
+  --color-base-100: var(--app-surface);
+  --color-base-200: var(--app-surface-2);
+  --color-base-300: var(--app-border);
+  --color-base-content: var(--app-text);
+  --color-primary: var(--app-accent);
+  --color-primary-content: var(--app-accent-contrast);
+  --color-info: #7fa8be;
+  --color-success: #7d9b8a;
+  --color-warning: #b79a6a;
+  --color-error: #a87373;
+}
+
+html[data-theme="dark"] {
+  --app-bg: #12181d;
+  --app-surface: #1a2229;
+  --app-surface-2: #222c35;
+  --app-text: #e7edf2;
+  --app-text-muted: #a9b6c1;
+  --app-border: #33414d;
+  --app-accent: #8db2c4;
+  --app-accent-hover: #a0c1d0;
+  --app-accent-soft: #243544;
+  --app-accent-contrast: #0c1720;
+  --app-link: #9fc2d3;
+  --app-focus: #9ab9c9;
+
+  --color-base-100: var(--app-surface);
+  --color-base-200: var(--app-surface-2);
+  --color-base-300: var(--app-border);
+  --color-base-content: var(--app-text);
+  --color-primary: var(--app-accent);
+  --color-primary-content: var(--app-accent-contrast);
+  --color-info: #6f91a4;
+  --color-success: #6c8979;
+  --color-warning: #9a835a;
+  --color-error: #926565;
+}
+
+@layer base {
+  html,
+  body {
+    background-color: var(--app-bg);
+    color: var(--app-text);
+    transition:
+      background-color 180ms ease,
+      color 180ms ease;
+  }
+
+  /* Hide vertical scrollbar globally but keep scrolling functional */
+  html,
+  body {
+    /* Firefox */
+    scrollbar-width: none !important;
+    /* IE and Edge */
+    -ms-overflow-style: none !important;
+  }
+
+  /* WebKit browsers (Chrome, Safari, Opera) */
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    width: 0 !important; /* vertical scrollbar width */
+    height: 0 !important; /* horizontal scrollbar height */
+    display: none !important;
+  }
+}
+
+/* Experience page additions: smooth scroll and reduced-motion handling for reveal animations */
+:root {
+  --toc-width: 240px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}

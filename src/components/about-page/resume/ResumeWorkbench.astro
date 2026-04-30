@@ -1,0 +1,25 @@
+<section class="about-workbench rounded-2xl border border-base-300/90 bg-base-100/90 shadow-sm">
+  <div class="workbench-top border-b border-base-300/80 px-4 py-3 sm:px-5">
+    <slot name="topbar" />
+  </div>
+  <div class="workbench-grid grid grid-cols-[98px_minmax(0,1fr)] gap-3 p-3 sm:grid-cols-[128px_minmax(0,1fr)] sm:gap-4 sm:p-4 lg:grid-cols-[220px_minmax(0,1fr)] lg:p-5">
+    <aside class="workbench-sidebar min-w-0 space-y-4">
+      <slot name="sidebar" />
+    </aside>
+    <div class="workbench-main min-w-0">
+      <slot name="main" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-workbench {
+    box-shadow:
+      0 1px 1px color-mix(in srgb, var(--color-base-content) 6%, transparent),
+      0 8px 28px color-mix(in srgb, var(--color-base-content) 7%, transparent);
+  }
+
+  .workbench-top {
+    background: color-mix(in srgb, var(--color-base-200) 48%, var(--color-base-100));
+  }
+</style>

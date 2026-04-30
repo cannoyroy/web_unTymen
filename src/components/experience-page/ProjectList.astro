@@ -1,0 +1,16 @@
+---
+import type { ProjectItem } from "../../data/experience";
+import ExperienceCard from "./ExperienceCard.astro";
+
+interface Props {
+  items: ProjectItem[];
+}
+
+const { items } = Astro.props as Props;
+---
+
+<div class="space-y-4">
+  {items.map((project) => (
+    <ExperienceCard type="project" item={project} />
+  ))}
+</div>

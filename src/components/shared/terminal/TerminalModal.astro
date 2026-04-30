@@ -1,0 +1,60 @@
+﻿---
+const {
+     panelId = "terminal-panel",
+     outputId = "terminal-output",
+     inputId = "terminal-input",
+     titleId = "terminal-title",
+     title = "terminal://command",
+} = Astro.props;
+---
+
+<!-- 模态窗口容器：支持拖拽移动与缩放，初始位置固定在视口中心。 -->
+<div class="shortcut-modal absolute h-[min(78vh,720px)] min-h-90 w-[min(760px,94vw)] min-w-105 rounded-xl border border-black/50 bg-[#1e1e1e] shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_18px_50px_rgba(0,0,0,0.55)]" role="dialog" aria-modal="true">
+  <!-- 终端主面板：通过 aria-labelledby 关联标题 -->
+  <div id={panelId} class="shortcut-panel h-full flex flex-col" aria-labelledby={titleId}>
+
+    <!-- 标题栏：既是视觉标题区域，也是拖拽手柄。 -->
+    <div class="shortcut-titlebar relative flex h-8.5 cursor-move select-none items-center justify-center border-b border-white/10 bg-linear-to-b from-[#2a2a2a] to-[#1b1b1b] px-3 after:pointer-events-none after:absolute after:right-3.5 after:text-[12px] after:font-mono after:tracking-[0.08em] after:text-[rgba(216,216,216,0.7)] after:content-[attr(data-clock)]">
+      <!-- 交通灯按钮：不可触发行为，仅用于保留系统风格。 -->
+      <div class="shortcut-traffic-lights absolute left-3 flex gap-2">
+        <span class="shortcut-control shortcut-control-minimize inline-block h-2.5 w-2.5 rounded-full border border-black/35 bg-[#ff5f57]" aria-hidden="true"></span>
+        <span class="shortcut-control shortcut-control-minimize inline-block h-2.5 w-2.5 rounded-full border border-black/35 bg-[#febc2e]" aria-hidden="true"></span>
+        <span class="shortcut-control shortcut-control-fullscreen inline-block h-2.5 w-2.5 rounded-full border border-black/35 bg-[#28c840]" aria-hidden="true"></span>
+      </div>
+      <!-- 终端标题文本，可通过 props 传入自定义值。 -->
+      <h2 id={titleId} class="shortcut-title m-0 font-mono text-[13px] font-semibold uppercase tracking-[0.08em] text-[#d8d8d8]">{title}</h2>
+    </div>
+
+    <!-- 终端内容区：上方输出、下方输入，最底层挂载缩放手柄。 -->
+    <div class="shortcut-body relative flex min-h-65 flex-1 flex-col gap-3 bg-[#1e1e1e] px-4.5 pb-5.5 pt-4 font-mono text-[#d8d8d8] after:pointer-events-none after:absolute after:inset-0 after:opacity-20 after:mix-blend-soft-light after:content-['']">
+      <!-- 输出列表：脚本会把命令回显、提示、错误与搜索结果追加到该节点。 -->
+      <ul id={outputId} class="terminal-output m-0 grid flex-1 list-none gap-1.5 overflow-auto p-0 text-[13px] leading-4 [&>li]:whitespace-pre-wrap [&>li]:text-[rgba(216,216,216,0.9)] [&>li.command]:text-[#a8d8ff] [&>li.error]:text-[#ff8c8c] [&>li.dim]:text-[rgba(216,216,216,0.6)] [&>li.dim>button]:m-0 [&>li.dim>button]:cursor-pointer [&>li.dim>button]:border-none [&>li.dim>button]:bg-transparent [&>li.dim>button]:p-0 [&>li.dim>button]:text-left [&>li.dim>button]:font-inherit [&>li.dim>button:hover]:text-[#a8d8ff] [&>li.dim>button:hover]:underline" aria-live="polite"></ul>
+      <!-- 输入行：提示符 + 文本输入，回车后交给命令解析器执行。 -->
+      <div class="terminal-input-row terminal-input-row-bottom mt-auto flex items-center gap-2 bg-transparent px-0.5 pb-0.5 pt-2">
+        <span class="terminal-prompt-text text-[13px] leading-4.5 text-[#a8d8ff]">terminal@bot:~$ </span>
+        <label for={inputId} class="sr-only">终端命令输入</label>
+        <input id={inputId} type="text" autocomplete="off" spellcheck="false" class="flex-1 border-none bg-transparent text-[13px] leading-4.5 text-[#d8d8d8] caret-[#a8d8ff] outline-none" />
+      </div>
+    </div>
+  </div>
+
+  <!-- 缩放热区层：8 个方向手柄，data-resize 由脚本识别并计算新尺寸。 -->
+  <div class="terminal-resize-handles pointer-events-none absolute inset-0" aria-hidden="true">
+    <!-- 手柄节点定义：上、下、左、右、左上、右上、左下、右下手柄 -->
+    <span class="terminal-resize-handle pointer-events-auto absolute -top-1 left-2.5 right-2.5 h-2.5 cursor-ns-resize" data-resize="n"></span>
+    <span class="terminal-resize-handle pointer-events-auto absolute -bottom-1 left-2.5 right-2.5 h-2.5 cursor-ns-resize" data-resize="s"></span>
+    <span class="terminal-resize-handle pointer-events-auto absolute -right-1 bottom-2.5 top-2.5 w-2.5 cursor-ew-resize" data-resize="e"></span>
+    <span class="terminal-resize-handle pointer-events-auto absolute -left-1 bottom-2.5 top-2.5 w-2.5 cursor-ew-resize" data-resize="w"></span>
+    <span class="terminal-resize-handle pointer-events-auto absolute -right-1.5 -top-1.5 h-3.5 w-3.5 cursor-nesw-resize" data-resize="ne"></span>
+    <span class="terminal-resize-handle pointer-events-auto absolute -left-1.5 -top-1.5 h-3.5 w-3.5 cursor-nwse-resize" data-resize="nw"></span>
+    <span class="terminal-resize-handle pointer-events-auto absolute -bottom-1.5 -right-1.5 h-3.5 w-3.5 cursor-nwse-resize" data-resize="se"></span>
+    <span class="terminal-resize-handle pointer-events-auto absolute -bottom-1.5 -left-1.5 h-3.5 w-3.5 cursor-nesw-resize" data-resize="sw"></span>
+  </div>
+</div>
+
+<script>
+  // 行为逻辑独立在模块文件中，包含快捷键、命令执行、拖拽与缩放等交互。
+  import { bootstrapTerminalModal } from './terminalModal.js';
+
+  bootstrapTerminalModal();
+</script>

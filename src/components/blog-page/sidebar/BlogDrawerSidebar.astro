@@ -1,0 +1,51 @@
+---
+// BlogDrawerSidebar.astro - Sidebar for blog page
+import BlogHeatmapSection from "./section/BlogHeatmapSection.astro";
+import BlogTagSection from "./section/BlogTagSection.astro";
+import BlogProfileSection from "./section/BlogProfileSection.astro";
+import NavigationSection from "./section/NavigationSection.astro";
+import SidebarHeader from "./section/SidebarHeader.astro";
+import BlogSidebarIsland from "./BlogSidebarIsland";
+import BlogSearchIsland from "./BlogSearchIsland";
+import type { HeatmapMatrix } from "./heatmap/types";
+
+interface Props {
+  heatmap: HeatmapMatrix;
+  initialSelectedDate: string;
+  stats: {
+    totalPosts: number;
+    totalTags: number;
+    daysActive: number;
+  };
+  tags?: string[];
+}
+
+const { heatmap, initialSelectedDate, stats, tags = [] } = Astro.props as Props;
+---
+
+<div
+  id="drawer-backdrop"
+  class="fixed inset-0 z-55 bg-black/30 opacity-0 pointer-events-none transition-opacity duration-300 ease-out md:hidden"
+  aria-hidden="true"
+></div>
+
+<aside
+  id="drawer-sidebar"
+  class="drawer-sidebar fixed top-0 left-0 z-65 h-screen bg-[var(--app-bg)] shrink-0 w-[320px] max-w-[min(320px,85vw)] overflow-hidden -translate-x-full pointer-events-none will-change-transform transition-[transform,width,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:static md:z-auto md:max-w-none md:translate-x-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+>
+  <div class="drawer-content flex flex-col h-full overflow-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+    <div class="drawer-header p-4 flex justify-between items-center text-gray-400">
+      <SidebarHeader />
+    </div>
+
+    <div class="drawer-body flex-1 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+      <BlogProfileSection stats={stats} />
+      <BlogHeatmapSection heatmap={heatmap} initialSelectedDate={initialSelectedDate} />
+      <NavigationSection />
+      <BlogTagSection tags={tags} />
+    </div>
+  </div>
+</aside>
+
+<BlogSidebarIsland client:load />
+<BlogSearchIsland client:load />

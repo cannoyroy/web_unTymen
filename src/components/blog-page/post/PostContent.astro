@@ -1,0 +1,114 @@
+<section class="post-markdown mt-8">
+  <slot />
+</section>
+
+<style>
+  .post-markdown {
+    color: var(--app-text-muted);
+    line-height: 1.85;
+  }
+
+  .post-markdown :global(h1),
+  .post-markdown :global(h2),
+  .post-markdown :global(h3),
+  .post-markdown :global(h4) {
+    color: var(--app-text);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    margin-top: 1.6em;
+    margin-bottom: 0.65em;
+    scroll-margin-top: 6.5rem;
+  }
+
+  .post-markdown :global(h1) {
+    display: none;
+  }
+
+  .post-markdown :global(h2) {
+    font-size: clamp(1.35rem, 1.2rem + 0.6vw, 1.75rem);
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--app-border) 70%, transparent);
+  }
+
+  .post-markdown :global(h3) {
+    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.35rem);
+  }
+
+  .post-markdown :global(p),
+  .post-markdown :global(li) {
+    font-size: 1rem;
+  }
+
+  .post-markdown :global(ul),
+  .post-markdown :global(ol) {
+    margin: 0.85rem 0 1rem;
+    padding-left: 1.35rem;
+  }
+
+  .post-markdown :global(a) {
+    color: var(--app-link);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .post-markdown :global(code) {
+    border: 1px solid color-mix(in srgb, var(--app-border) 90%, transparent);
+    border-radius: 0.35rem;
+    background: color-mix(in srgb, var(--app-surface-2) 75%, transparent);
+    padding: 0.08rem 0.35rem;
+    font-size: 0.92em;
+  }
+
+  .post-markdown :global(pre) {
+    margin: 1.1rem 0;
+    border: 1px solid color-mix(in srgb, var(--app-border) 95%, transparent);
+    border-radius: 0.75rem;
+    background: color-mix(in srgb, var(--app-bg) 78%, black);
+    padding: 1rem;
+    overflow-x: auto;
+  }
+
+  .post-markdown :global(pre code) {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    padding: 0;
+    color: var(--app-accent-contrast);
+  }
+
+  .post-markdown :global(blockquote) {
+    margin: 1rem 0;
+    padding: 0.75rem 1rem;
+    border-left: 3px solid color-mix(in srgb, var(--app-border) 75%, transparent);
+    background: color-mix(in srgb, var(--app-surface-2) 45%, transparent);
+  }
+
+  .post-markdown :global(img) {
+    border-radius: 0.6rem;
+    border: 1px solid color-mix(in srgb, var(--app-border) 70%, transparent);
+    margin: 1rem 0;
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .post-markdown :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    overflow-x: auto;
+    display: block;
+  }
+
+  .post-markdown :global(th),
+  .post-markdown :global(td) {
+    border: 1px solid color-mix(in srgb, var(--app-border) 90%, transparent);
+    padding: 0.55rem 0.7rem;
+    text-align: left;
+  }
+
+  .post-markdown :global(hr) {
+    border-color: color-mix(in srgb, var(--app-border) 70%, transparent);
+    margin: 1.3rem 0;
+  }
+</style>

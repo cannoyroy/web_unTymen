@@ -1,0 +1,136 @@
+---
+import type { AboutCodeBlock, AboutLanguage } from "../../../data/about";
+import { tokenizeCodeLine } from "./tokenizeCodeLine";
+
+interface Props {
+  codeByLang: Record<AboutLanguage, AboutCodeBlock[]>;
+  defaultLanguage?: AboutLanguage;
+}
+
+const { codeByLang, defaultLanguage = "go" } = Astro.props as Props;
+---
+
+{
+  Object.entries(codeByLang).map(([lang, blocks]) => (
+    <div
+      class:list={["code-lang-panel", lang === defaultLanguage && "is-active"]}
+      data-lang-code={lang}
+    >
+      {blocks.map((block) => (
+        <article class="code-block overflow-hidden rounded-xl border border-base-300/80 bg-base-100/80">
+          <header class="code-block-head border-b border-base-300/80 px-3 py-2 text-xs text-base-content/70">
+            {block.title}
+          </header>
+          <ol class="code-lines px-2 py-2">
+            {block.lines.map((line, index) => (
+              <li class="code-line">
+                <span class="line-no" aria-hidden="true">{index + 1}</span>
+                <code>
+                  {(line ? tokenizeCodeLine(line) : [{ type: "plain", value: " " }]).map((token) => (
+                    <span data-token={token.type}>{token.value}</span>
+                  ))}
+                </code>
+              </li>
+            ))}
+          </ol>
+        </article>
+      ))}
+    </div>
+  ))
+}
+
+<style>
+  .code-lang-panel {
+    display: none;
+  }
+
+  .code-lang-panel.is-active {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .code-block {
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--color-base-100) 55%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--color-base-content) 5%, transparent);
+  }
+
+  .code-block-head {
+    background: color-mix(in srgb, var(--color-base-200) 70%, var(--color-base-100));
+  }
+
+  .code-lines {
+    margin: 0;
+    list-style: none;
+    background: color-mix(in srgb, var(--color-base-100) 92%, transparent);
+  }
+
+  .code-line {
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: baseline;
+    font-family: "Cascadia Code", "JetBrains Mono", "Consolas", monospace;
+    font-size: 0.79rem;
+    line-height: 1.52;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .line-no {
+    text-align: right;
+    user-select: none;
+    color: color-mix(in srgb, var(--color-base-content) 36%, transparent);
+  }
+
+  .code-line code [data-token="kw"] {
+    color: color-mix(in srgb, var(--color-primary) 88%, var(--color-base-content));
+  }
+
+  .code-line code [data-token="type"] {
+    color: color-mix(in srgb, var(--color-info) 90%, var(--color-base-content));
+  }
+
+  .code-line code [data-token="ident"] {
+    color: color-mix(in srgb, var(--color-base-content) 88%, transparent);
+  }
+
+  .code-line code [data-token="str"] {
+    color: color-mix(in srgb, var(--color-success) 85%, var(--color-base-content));
+  }
+
+  .code-line code [data-token="num"] {
+    color: color-mix(in srgb, var(--color-warning) 86%, var(--color-base-content));
+  }
+
+  .code-line code [data-token="comment"] {
+    color: color-mix(in srgb, var(--color-base-content) 54%, transparent);
+    font-style: italic;
+  }
+
+  .code-line code [data-token="punct"] {
+    color: color-mix(in srgb, var(--color-base-content) 72%, transparent);
+  }
+
+  .code-line code [data-token="plain"] {
+    color: color-mix(in srgb, var(--color-base-content) 84%, transparent);
+  }
+
+  @media (max-width: 640px) {
+    .code-block-head {
+      padding: 0.4rem 0.55rem;
+      font-size: 0.66rem;
+    }
+
+    .code-lines {
+      padding: 0.35rem 0.45rem;
+    }
+
+    .code-line {
+      grid-template-columns: 1.7rem minmax(0, 1fr);
+      gap: 0.45rem;
+      font-size: 0.68rem;
+      line-height: 1.35;
+    }
+  }
+</style>

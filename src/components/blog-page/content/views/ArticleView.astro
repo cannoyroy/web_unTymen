@@ -1,0 +1,224 @@
+---
+// ArticleView.astro - Article list layout (Note style)
+import { type CollectionEntry } from 'astro:content';
+import ContentView from '../ContentView.astro';
+import TagFilterIsland from "../TagFilterIsland";
+import ArticleCardNavigationIsland from "../ArticleCardNavigationIsland";
+import ArticleSortIsland from "../ArticleSortIsland";
+import CategoryFilterIsland from "../CategoryFilterIsland";
+
+interface Props {
+  pinnedPosts?: CollectionEntry<'blog'>[];
+  sortedPosts?: CollectionEntry<'blog'>[];
+  hidden?: boolean;
+}
+
+const { pinnedPosts = [], sortedPosts = [], hidden = false } = Astro.props;
+
+// 展开标签路径（保持与其他视图相同的逻辑）
+const expandTagPaths = (tag: string) => {
+  const segments = tag.split('/').map((s) => s.trim()).filter(Boolean);
+  return segments.map((_, i) => segments.slice(0, i + 1).join('/'));
+};
+
+const getPostTagPaths = (tags: string[]) =>
+  [...new Set(tags.flatMap((tag) => expandTagPaths(tag)))].join('|');
+
+const getPrimaryCategory = (tags: string[]): string => {
+  const order = ['科研', '计科', 'AI', '社科', '随笔', '思辨', '时流', '周报', '技能训练', '清单', '翻译'];
+  for (const cat of order) {
+    if (tags.includes(cat)) return cat;
+  }
+  return '随笔';
+};
+
+const categoryToGroup = (cat: string): string => {
+  if (cat === '科研') return 'RESEARCH';
+  if (cat === '计科' || cat === 'AI') return 'TECH';
+  if (cat === '社科') return 'SOCIAL';
+  if (cat === '随笔') return 'ESSAYS';
+  if (cat === '思辨') return 'THINKING';
+  if (cat === '时流' || cat === '周报') return 'CURRENT';
+  if (cat === '技能训练' || cat === '清单') return 'SKILLS';
+  if (cat === '翻译') return 'TRANSLATIONS';
+  return 'ESSAYS';
+};
+
+const getReadingTime = (body: string) => {
+  const cleanBody = body.replace(/[#*`[\]()\-|!]/g, '');
+  const chineseChars = (cleanBody.match(/[一-龥]/g) || []).length;
+  const englishWords = cleanBody.replace(/[一-龥]/g, '').trim().split(/\s+/).filter(Boolean).length;
+  const totalWords = chineseChars + englishWords;
+  return Math.max(1, Math.ceil(totalWords / 300));
+};
+
+const formatTime = (date: Date) => {
+  return date.toLocaleDateString('zh-CN', { 
+    year: 'numeric', 
+    month: '2-digit', 
+    day: '2-digit' 
+  }) + ' ' + date.toLocaleTimeString('zh-CN', { 
+    hour: '2-digit', 
+    minute: '2-digit' 
+  });
+};
+---
+
+<!-- Article视图 - use shared ContentView -->
+<ContentView
+  viewId="article-view"
+  title="ARTICLE"
+  count={sortedPosts.length}
+  hidden={hidden}
+>
+  <Fragment slot="header-right">
+    <button
+      id="sort-toggle-btn"
+      class="p-2 hover:bg-base-200 hover:text-gray-600 rounded-lg transition-colors flex items-center gap-1"
+      title="切换排序"
+      type="button"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+      </svg>
+      <span class="text-xs hidden sm:inline">排序</span>
+    </button>
+  </Fragment>
+
+  <section id="post-list" class="post-list w-full space-y-4">
+    <!-- 置顶文章 (Pinned) -->
+    {pinnedPosts.length > 0 && pinnedPosts.map((post) => (
+      <article 
+        class="arti-card bg-base-100 rounded-xl p-5 shadow-sm border border-base-200/60 cursor-pointer"
+        data-post-card
+        data-post-url={`/posts/${post.id}/`}
+        data-post-title={post.data.title}
+        data-tags={getPostTagPaths(post.data.tags)}
+        data-post-date={post.data.pubDate.toISOString()}
+        data-category={categoryToGroup(getPrimaryCategory(post.data.tags))}
+      >
+        <!-- Time meta with pinned indicator -->
+        <div class="flex items-center justify-between mb-3 text-xs text-base-content/40 font-mono border-b border-base-100 pb-2">
+           <div class="flex items-center gap-2">
+             <time datetime={post.data.pubDate.toISOString()}>
+               {formatTime(post.data.pubDate)}
+             </time>
+             <span>·</span>
+             <span>{getReadingTime(post.body)} min read</span>
+           </div>
+           <span class="flex items-center gap-1 text-warning bg-warning/10 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
+              </svg>
+              Pinned
+           </span>
+        </div>
+
+        <!-- Title -->
+        <div class="mb-3">
+           <h3 class="text-lg font-bold text-base-content/90 mb-2 leading-tight hover:text-[var(--app-accent-hover)] transition-colors">
+             <a href={`/posts/${post.id}/`} class="focus:outline-none">
+                {post.data.title}
+             </a>
+           </h3>
+
+        </div>
+
+        <!-- Tags -->
+        <div class="flex flex-wrap gap-2">
+          {post.data.tags.map((tag) => (
+            <button class="article-tag-btn text-xs text-[var(--app-accent)] hover:text-[var(--app-accent-hover)] hover:bg-[var(--app-accent-soft)] px-1.5 py-0.5 rounded transition-colors" data-tag={tag}>
+              #{tag}
+            </button>
+          ))}
+        </div>
+
+    <div>
+     {post.data.description && (
+         <p class="text-sm text-base-content/70 leading-relaxed">
+            {post.data.description}
+         </p>
+       )}
+    </div>
+      </article>
+    ))}
+
+    <!-- 普通文章列表 -->
+    {sortedPosts.map((post) => (
+      !post.data.docked && (
+      <article 
+        class="arti-card bg-base-100 rounded-xl p-5 shadow-sm border border-base-200/60 cursor-pointer"
+        data-post-card
+        data-post-url={`/posts/${post.id}/`}
+        data-post-title={post.data.title}
+        data-tags={getPostTagPaths(post.data.tags)}
+        data-post-date={post.data.pubDate.toISOString()}
+        data-category={categoryToGroup(getPrimaryCategory(post.data.tags))}
+      >
+        <!-- Time meta -->
+        <div class="flex items-center justify-between mb-3 text-xs text-base-content/40 font-mono border-b border-base-100 pb-2">
+           <div class="flex items-center gap-2">
+             <time datetime={post.data.pubDate.toISOString()}>
+               {formatTime(post.data.pubDate)}
+             </time>
+             <span>·</span>
+             <span>{getReadingTime(post.body)} min read</span>
+           </div>
+        </div>
+
+        <!-- Title -->
+        <div class="mb-3">
+           <h3 class="text-lg font-bold text-base-content/90 mb-2 leading-tight hover:text-[var(--app-accent-hover)] transition-colors">
+             <a href={`/posts/${post.id}/`} class="focus:outline-none">
+                {post.data.title}
+             </a>
+           </h3>
+           {post.data.description && (
+             <p class="text-sm text-base-content/70 leading-relaxed">
+                {post.data.description}
+             </p>
+           )}
+        </div>
+
+        <!-- Tags -->
+        <div class="flex flex-wrap gap-2">
+          {post.data.tags.map((tag) => (
+            <button class="article-tag-btn text-xs text-[var(--app-accent)] hover:text-[var(--app-accent-hover)] hover:bg-[var(--app-accent-soft)] px-1.5 py-0.5 rounded transition-colors" data-tag={tag}>
+              #{tag}
+            </button>
+          ))}
+        </div>
+      </article>
+      )
+    ))}
+  </section>
+
+  <!-- Empty state -->
+  <div id="article-empty-state" class="hidden flex flex-col items-center justify-center py-20 text-center">
+     <div class="w-16 h-16 rounded-full bg-base-200/50 flex items-center justify-center mb-4 text-base-content/30">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+     </div>
+     <p class="text-base-content/60">No notes found.</p>
+     <button id="article-clear-tag-filter-empty" class="btn btn-link btn-sm mt-2 text-primary">Show all</button>
+  </div>
+</ContentView>
+<TagFilterIsland
+  client:load
+  tagButtonSelector=".article-tag-btn"
+  cardSelector="[data-post-card]"
+  emptyStateId="article-empty-state"
+  clearButtonIds={["article-clear-tag-filter", "article-clear-tag-filter-empty"]}
+  activeTagPanelId="article-active-tag-panel"
+  activeTagNameId="article-active-tag-name"
+  includeSidebarTagState={true}
+  tagClickMode="modifier"
+/>
+<ArticleCardNavigationIsland
+  client:load
+  cardSelector="[data-post-card]"
+  tagButtonSelector=".article-tag-btn"
+/>
+ <ArticleSortIsland client:load />
+<CategoryFilterIsland client:load />
