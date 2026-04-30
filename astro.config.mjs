@@ -16,7 +16,6 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 
-  site:"https://cannoyroy.github.io",
-  base: "/web_unTymen",
+  site:"https://new.untymen.com",
   integrations: [preact()]
 });
