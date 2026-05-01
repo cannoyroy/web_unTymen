@@ -29,10 +29,10 @@ const publishIOSGuide = () => {
   publishMessage({
     id: INSTALL_MESSAGE_ID,
     kind: "install",
-    title: "安装本站到主屏幕",
-    body: "点击 Safari 分享按钮，再选择“添加到主屏幕”。",
+    title: "Install this site to your home screen",
+    body: "Tap the Safari Share button, then choose Add to Home Screen.",
     priority: 90,
-    actions: [{ id: "dismiss", label: "知道了", variant: "primary" }],
+    actions: [{ id: "dismiss", label: "Install now", variant: "primary" }],
     onAction: () => {
       islandStorage.markInstallDismissed();
       dismissMessage(INSTALL_MESSAGE_ID);
@@ -44,12 +44,12 @@ const publishNativeInstall = () => {
   publishMessage({
     id: INSTALL_MESSAGE_ID,
     kind: "install",
-    title: "将网站安装为应用",
-    body: "安装后可像 App 一样在设备上快速打开。",
+    title: "Install this site to your home screen",
+    body: "Tap the Safari Share button, then choose Add to Home Screen.",
     priority: 100,
     actions: [
-      { id: "install", label: "立即安装", variant: "primary" },
-      { id: "dismiss", label: "稍后", variant: "ghost" },
+      { id: "install", label: "Install now", variant: "primary" },
+      { id: "dismiss", label: "Later", variant: "ghost" },
     ],
     onAction: async (actionId) => {
       if (actionId === "dismiss") {
@@ -102,8 +102,8 @@ export const initInstallPromptSource = () => {
     publishMessage({
       id: INSTALL_SUCCESS_ID,
       kind: "system",
-      title: "应用已安装",
-      body: "你现在可以从桌面图标快速启动本站。",
+      title: "Install this site to your home screen",
+      body: "Tap the Safari Share button, then choose Add to Home Screen.",
       priority: 80,
       ttlMs: 4000,
     });

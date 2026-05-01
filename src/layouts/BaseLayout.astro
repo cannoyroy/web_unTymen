@@ -118,7 +118,7 @@ const contentWidthClass = contentWidthClassMap[contentWidth] ?? "max-w-6xl";
       window.addEventListener('dock:show-reveal-hint', () => {
         const toast = document.createElement('div');
         toast.className = 'fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-base-100 text-base-content px-4 py-3 rounded-lg shadow-lg border border-base-200 z-50 animate-fade-in-up';
-        toast.textContent = '↑ 向上滑动或点击底部显示菜单';
+        toast.textContent = 'Scroll up or tap the bottom bar to show the menu.';
         document.body.appendChild(toast);
 
         setTimeout(() => {

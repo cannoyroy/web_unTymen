@@ -2,15 +2,204 @@
 
 ---
 
-<div class="fab fab-flower">
-  <!-- a focusable div with tabindex is necessary to work on all browsers. role="button" is necessary for accessibility -->
-  <div tabindex="0" role="button" class="btn btn-lg btn-circle" style="background-color: var(--app-accent); border-color: var(--app-accent); color: var(--app-accent-contrast);">F</div>
+<div class="fab-flower-wrapper md:hidden" data-fab-root>
+  <button
+    type="button"
+    class="fab-main btn btn-circle btn-lg"
+    data-fab-main
+    aria-expanded="false"
+    aria-controls="fab-actions"
+    aria-label="更多操作"
+  >
+    +
+  </button>
 
-  <!-- Main Action button replaces the original button when FAB is open -->
-  <button class="fab-main-action btn btn-circle btn-lg"></button>
-
-  <!-- buttons that show up when FAB is open -->
-  <button class="btn btn-lg btn-circle">Exit</button>
-  <button class="btn btn-lg btn-circle">Bot</button>
-  <button class="btn btn-lg btn-circle">Top</button>
+  <div id="fab-actions" class="fab-actions" data-fab-actions aria-hidden="true">
+    <button type="button" class="btn btn-circle fab-action" data-fab-slot="0"></button>
+    <button type="button" class="btn btn-circle fab-action" data-fab-slot="1"></button>
+    <button type="button" class="btn btn-circle fab-action" data-fab-slot="2"></button>
+  </div>
 </div>
+
+<script>
+  type FabAction = {
+    key: "top" | "home" | "back" | "blog" | "about" | "toc";
+    label: string;
+    onClick: () => void;
+    hidden?: boolean;
+  };
+
+  const normalizePath = (path: string) => {
+    if (path === "/") return "/";
+    return path.endsWith("/") ? path : `${path}/`;
+  };
+
+  const findTocTarget = () =>
+    (document.querySelector("[data-post-toc-link]") as HTMLElement | null) ||
+    (document.querySelector("[data-toc-link]") as HTMLElement | null) ||
+    (document.querySelector('[data-toc], .toc, nav[aria-label*="目录"], nav[aria-label*="Table of Contents"]') as HTMLElement | null);
+
+  const hasToc = () => !!findTocTarget();
+
+  const canGoBack = () => window.history.length > 1;
+
+  const canScrollTop = () => document.documentElement.scrollHeight > window.innerHeight + 80;
+
+  const actionsMap = {
+    top: (): FabAction => ({
+      key: "top",
+      label: "Top",
+      onClick: () => window.scrollTo({ top: 0, behavior: "smooth" }),
+      hidden: !canScrollTop(),
+    }),
+    home: (): FabAction => ({
+      key: "home",
+      label: "Home",
+      onClick: () => {
+        window.location.href = "/";
+      },
+    }),
+    back: (): FabAction => ({
+      key: "back",
+      label: "Back",
+      onClick: () => {
+        if (canGoBack()) {
+          window.history.back();
+          return;
+        }
+        window.location.href = "/";
+      },
+    }),
+    blog: (): FabAction => ({
+      key: "blog",
+      label: "Blog",
+      onClick: () => {
+        window.location.href = "/blog/";
+      },
+    }),
+    about: (): FabAction => ({
+      key: "about",
+      label: "About",
+      onClick: () => {
+        window.location.href = "/about/";
+      },
+    }),
+    toc: (): FabAction => ({
+      key: "toc",
+      label: "TOC",
+      onClick: () => {
+        const target = findTocTarget();
+        if (target) {
+          const details = target.closest("details") as HTMLDetailsElement | null;
+          if (details && !details.open) {
+            details.open = true;
+          }
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+          return;
+        }
+        if (canGoBack()) {
+          window.history.back();
+          return;
+        }
+        window.location.href = "/";
+      },
+      hidden: !hasToc(),
+    }),
+  } as const;
+
+  const pickActionsByPath = (path: string) => {
+    if (path === "/") return ["top", "blog", "about"] as const;
+    if (path === "/blog/") return ["top", "home", "back"] as const;
+    if (path.startsWith("/posts/")) return ["top", "home", "toc"] as const;
+    if (path === "/about/") return ["top", "home", "back"] as const;
+    return ["top", "home", "back"] as const;
+  };
+
+  const root = document.querySelector("[data-fab-root]") as HTMLElement | null;
+  if (root && root.dataset.fabReady !== "1") {
+    root.dataset.fabReady = "1";
+    const main = root.querySelector("[data-fab-main]") as HTMLButtonElement | null;
+    const panel = root.querySelector("[data-fab-actions]") as HTMLElement | null;
+    const slots = Array.from(root.querySelectorAll("[data-fab-slot]")) as HTMLButtonElement[];
+    if (main && panel && slots.length >= 3) {
+      const pagePath = normalizePath(window.location.pathname);
+      const desired = pickActionsByPath(pagePath);
+      const resolved = desired
+        .map((key) => actionsMap[key]())
+        .map((action) => (action.key === "toc" && action.hidden ? actionsMap.back() : action))
+        .map((action) => (action.key === "back" && !canGoBack() ? actionsMap.home() : action));
+
+      const visible = resolved.filter((action) => !action.hidden);
+      while (visible.length < 3) {
+        const home = actionsMap.home();
+        visible.push(home);
+      }
+
+      visible.slice(0, 3).forEach((action, index) => {
+        const btn = slots[index];
+        btn.textContent = action.label;
+        btn.setAttribute("aria-label", action.label);
+        btn.onclick = () => {
+          action.onClick();
+          panel.classList.remove("is-open");
+          main.setAttribute("aria-expanded", "false");
+          panel.setAttribute("aria-hidden", "true");
+        };
+      });
+
+      main.addEventListener("click", () => {
+        const isOpen = panel.classList.toggle("is-open");
+        main.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        panel.setAttribute("aria-hidden", isOpen ? "false" : "true");
+      });
+    }
+  }
+</script>
+
+<style>
+  .fab-flower-wrapper {
+    position: fixed;
+    right: 1rem;
+    bottom: 5.25rem;
+    z-index: 75;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+    gap: 0.6rem;
+  }
+
+  .fab-main {
+    border: 1px solid var(--app-accent);
+    background: var(--app-accent);
+    color: var(--app-accent-contrast);
+    box-shadow: 0 8px 22px color-mix(in srgb, var(--app-accent) 35%, transparent);
+  }
+
+  .fab-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(6px) scale(0.98);
+    transition: opacity 160ms ease, transform 160ms ease;
+  }
+
+  .fab-actions.is-open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+  }
+
+  .fab-action {
+    min-width: 3.4rem;
+    border: 1px solid var(--app-border);
+    background: color-mix(in srgb, var(--app-surface) 86%, white);
+    color: var(--app-text);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    box-shadow: 0 6px 16px color-mix(in srgb, black 10%, transparent);
+  }
+</style>

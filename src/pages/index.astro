@@ -1,4 +1,4 @@
----
+﻿---
 import { getCollection } from 'astro:content';
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/index-page/hero/Hero.astro";
@@ -6,7 +6,7 @@ import NewsletterSignup from "../components/shared/NewsletterSignup.astro";
 
 const pageTitle = "Home";
 
-// 获取最新 3 篇非草稿博文
+// Get the latest 3 non-draft posts
 const allPosts = await getCollection('blog');
 const publishedPosts = allPosts
   .filter(post => !post.data.draft)
@@ -32,7 +32,7 @@ const formatTime = (date: Date) => {
 
     <!-- Latest Articles Section -->
     <section class="py-8">
-      <h2 class="text-2xl font-bold mb-6 text-base-content">最新文章</h2>
+      <h2 class="text-2xl font-bold mb-6 text-base-content">Latest Posts</h2>
       <div class="grid gap-4">
         {publishedPosts.map((post) => (
           <article
@@ -69,7 +69,7 @@ const formatTime = (date: Date) => {
         ))}
       </div>
       <div class="mt-6 text-center">
-        <a href="/blog" class="btn btn-outline">查看全部文章</a>
+        <a href="/blog" class="btn btn-outline">View all posts</a>
       </div>
     </section>
 
@@ -78,23 +78,64 @@ const formatTime = (date: Date) => {
 
     <!-- Quick Navigation Section -->
     <section class="py-8">
-      <h2 class="text-2xl font-bold mb-6 text-base-content">快速导航</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <a href="/about" class="bg-base-100 rounded-xl p-6 shadow-sm border border-base-200/60 hover:shadow-md hover:border-[var(--app-accent)]/30 transition-all group">
-          <div class="text-3xl mb-3">👤</div>
-          <h3 class="text-lg font-bold text-base-content/90 group-hover:text-[var(--app-accent-hover)] transition-colors">About</h3>
-          <p class="text-sm text-base-content/70 mt-2">研究、项目与论文</p>
+      <div class="mb-6 flex items-end justify-between gap-4">
+        <h2 class="text-2xl font-bold text-base-content">Quick Navigation</h2>
+        <span class="text-sm text-base-content/45">Common links</span>
+      </div>
+
+      <div class="grid gap-4 lg:grid-cols-12">
+        <a href="/blog" class="group relative overflow-hidden rounded-[1.75rem] border border-base-200/70 bg-[linear-gradient(180deg,color-mix(in_srgb,var(--app-surface)_92%,white),var(--app-surface))] p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[var(--app-accent)]/25 hover:shadow-xl lg:col-span-7">
+          <div class="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--app-accent)_22%,transparent)_0%,transparent_70%)] blur-2xl transition-opacity group-hover:opacity-90"></div>
+          <div class="relative flex items-start justify-between gap-6">
+            <div class="min-w-0">
+              <div class="mb-3 inline-flex items-center gap-2 rounded-full border border-[var(--app-accent)]/15 bg-[var(--app-accent-soft)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--app-accent)]">01</div>
+              <h3 class="text-xl font-semibold text-base-content/90 transition-colors group-hover:text-[var(--app-accent-hover)]">Blog</h3>
+              <p class="mt-2 max-w-md text-sm leading-relaxed text-base-content/70">阅读我的文章与思考</p>
+            </div>
+            <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-base-200/70 bg-base-100/80 text-[var(--app-accent)] shadow-sm transition-transform duration-300 group-hover:scale-105">
+              <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M7 5h10a2 2 0 0 1 2 2v12H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.8" />
+                <path d="M9 9h6M9 12h6M9 15h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              </svg>
+            </div>
+          </div>
         </a>
-        <a href="/blog" class="bg-base-100 rounded-xl p-6 shadow-sm border border-base-200/60 hover:shadow-md hover:border-[var(--app-accent)]/30 transition-all group">
-          <div class="text-3xl mb-3">📝</div>
-          <h3 class="text-lg font-bold text-base-content/90 group-hover:text-[var(--app-accent-hover)] transition-colors">Blog</h3>
-          <p class="text-sm text-base-content/70 mt-2">阅读我的文章与思考</p>
-        </a>
-        <a href="/site" class="bg-base-100 rounded-xl p-6 shadow-sm border border-base-200/60 hover:shadow-md hover:border-[var(--app-accent)]/30 transition-all group">
-          <div class="text-3xl mb-3">🛠️</div>
-          <h3 class="text-lg font-bold text-base-content/90 group-hover:text-[var(--app-accent-hover)] transition-colors">This Site</h3>
-          <p class="text-sm text-base-content/70 mt-2">关于本站与开发历程</p>
-        </a>
+
+        <div class="grid gap-4 lg:col-span-5">
+          <a href="/about" class="group relative overflow-hidden rounded-[1.75rem] border border-base-200/70 bg-base-100/90 p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[var(--app-accent)]/25 hover:shadow-lg">
+            <div class="absolute inset-y-0 right-0 w-24 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.28))] opacity-0 transition-opacity group-hover:opacity-100"></div>
+            <div class="relative flex items-start justify-between gap-4">
+              <div class="min-w-0">
+                <div class="mb-3 inline-flex items-center gap-2 rounded-full border border-[var(--app-accent)]/15 bg-[var(--app-accent-soft)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--app-accent)]">02</div>
+                <h3 class="text-lg font-semibold text-base-content/90 transition-colors group-hover:text-[var(--app-accent-hover)]">About</h3>
+                <p class="mt-2 text-sm leading-relaxed text-base-content/70">研究、项目与论文</p>
+              </div>
+              <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-base-200/70 bg-base-100/85 text-[var(--app-accent)] shadow-sm transition-transform duration-300 group-hover:scale-105">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.8" />
+                  <path d="M5 20a7 7 0 0 1 14 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                </svg>
+              </div>
+            </div>
+          </a>
+
+          <a href="/site" class="group relative overflow-hidden rounded-[1.75rem] border border-base-200/70 bg-base-100/90 p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[var(--app-accent)]/25 hover:shadow-lg">
+            <div class="absolute inset-y-0 right-0 w-24 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.28))] opacity-0 transition-opacity group-hover:opacity-100"></div>
+            <div class="relative flex items-start justify-between gap-4">
+              <div class="min-w-0">
+                <div class="mb-3 inline-flex items-center gap-2 rounded-full border border-[var(--app-accent)]/15 bg-[var(--app-accent-soft)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--app-accent)]">03</div>
+                <h3 class="text-lg font-semibold text-base-content/90 transition-colors group-hover:text-[var(--app-accent-hover)]">This Site</h3>
+                <p class="mt-2 text-sm leading-relaxed text-base-content/70">关于本站与开发历程</p>
+              </div>
+              <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-base-200/70 bg-base-100/85 text-[var(--app-accent)] shadow-sm transition-transform duration-300 group-hover:scale-105">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M7 7h10v10H7z" stroke="currentColor" stroke-width="1.8" />
+                  <path d="M10 10h4M10 13h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                </svg>
+              </div>
+            </div>
+          </a>
+        </div>
       </div>
     </section>
 
