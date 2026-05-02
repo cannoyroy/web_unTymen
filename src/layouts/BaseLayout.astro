@@ -67,6 +67,27 @@ const contentWidthClass = contentWidthClassMap[contentWidth] ?? "max-w-6xl";
     <meta name="generator" content={Astro.generator} />
     <ClientRouter />
     <title>{pageTitle}</title>
+
+    <!-- Baidu Analytics -->
+    <link rel="preconnect" href="https://hm.baidu.com" crossorigin />
+    <script is:inline>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?e3bd3d2d2ba5ec2fa91e78288800fddc";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+      // Track SPA navigations triggered by Astro View Transitions
+      document.addEventListener("astro:after-swap", function () {
+        if (window._hmt) {
+          window._hmt.push([
+            "_trackPageview",
+            window.location.pathname + window.location.search,
+          ]);
+        }
+      });
+    </script>
   </head>
 
   <body class="tracking-wide text-base-content flex flex-col">
