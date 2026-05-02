@@ -7,6 +7,7 @@ import PostContent from "../components/blog-page/post/PostContent.astro";
 import PostTocIsland from "../components/blog-page/post/PostTocIsland";
 import PostProgressIsland from "../components/blog-page/post/PostProgressIsland";
 import NewsletterSignup from "../components/shared/NewsletterSignup.astro";
+import Comments from "../components/blog-page/post/Comments.astro";
 
 type HeadingItem = {
   depth: number;
@@ -40,7 +41,13 @@ const tocHeadings = (headings ?? []).filter(
 const hasToc = tocHeadings.length > 0;
 ---
 
-<BaseLayout pageTitle={frontmatter.title} mainClass="pt-16 md:pt-8" showChatFloat={false}>
+<BaseLayout
+  pageTitle={frontmatter.title}
+  ogTitle={frontmatter.title}
+  ogDescription={frontmatter.description}
+  mainClass="pt-16 md:pt-8"
+  showChatFloat={false}
+>
   <div class="post-progress" aria-hidden="true">
     <span id="reading-progress"></span>
   </div>
@@ -69,6 +76,8 @@ const hasToc = tocHeadings.length > 0;
           description="Subscribe to get future posts by email."
         />
       </div>
+
+      <Comments />
     </div>
 
     {hasToc && (

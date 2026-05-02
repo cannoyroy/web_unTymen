@@ -11,6 +11,8 @@ import { featureFlags } from "../config/features";
 
 interface Props {
   pageTitle?: string;
+  ogTitle?: string;
+  ogDescription?: string;
   contentWidth?: "5xl" | "6xl" | "7xl" | "full";
   contentClass?: string;
   mainClass?: string;
@@ -19,6 +21,8 @@ interface Props {
 
 const {
   pageTitle = "",
+  ogTitle,
+  ogDescription,
   contentWidth = "6xl",
   contentClass = "",
   mainClass = "",
@@ -67,6 +71,8 @@ const contentWidthClass = contentWidthClassMap[contentWidth] ?? "max-w-6xl";
     <meta name="generator" content={Astro.generator} />
     <ClientRouter />
     <title>{pageTitle}</title>
+    {ogTitle && <meta property="og:title" content={ogTitle} />}
+    {ogDescription && <meta property="og:description" content={ogDescription} />}
 
     <!-- Baidu Analytics -->
     <link rel="preconnect" href="https://hm.baidu.com" crossorigin />

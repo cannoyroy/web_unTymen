@@ -46,6 +46,39 @@
     padding-left: 1.35rem;
   }
 
+  .post-markdown :global(ul) {
+    list-style-type: disc;
+  }
+
+  .post-markdown :global(ol) {
+    list-style-type: decimal;
+  }
+
+  .post-markdown :global(ul ul),
+  .post-markdown :global(ol ul) {
+    list-style-type: circle;
+    margin: 0.25rem 0;
+  }
+
+  .post-markdown :global(ul ul ul),
+  .post-markdown :global(ol ul ul) {
+    list-style-type: square;
+  }
+
+  .post-markdown :global(ol ol),
+  .post-markdown :global(ul ol) {
+    list-style-type: lower-alpha;
+    margin: 0.25rem 0;
+  }
+
+  .post-markdown :global(li) {
+    margin: 0.25rem 0;
+  }
+
+  .post-markdown :global(li > p) {
+    margin: 0;
+  }
+
   .post-markdown :global(a) {
     color: var(--app-link);
     text-decoration: underline;

@@ -1,0 +1,156 @@
+---
+// Giscus comment integration. Configure the four constants below.
+// Get the category-id from https://giscus.app after configuring the widget.
+const GISCUS_REPO = "cannoyroy/web_unTymen";
+const GISCUS_REPO_ID = "R_kgDOSQ-zeg";
+const GISCUS_CATEGORY = "Announcements"; // TODO: e.g. "Comments"
+const GISCUS_CATEGORY_ID = "DIC_kwDOSQ-zes4C8Lp_"; // TODO: from giscus.app
+const GISCUS_MAPPING = "og:title";
+const GISCUS_LANG = "zh-CN";
+
+const config = {
+  repo: GISCUS_REPO,
+  repoId: GISCUS_REPO_ID,
+  category: GISCUS_CATEGORY,
+  categoryId: GISCUS_CATEGORY_ID,
+  mapping: GISCUS_MAPPING,
+  lang: GISCUS_LANG,
+};
+---
+
+<section class="comments mt-12">
+  <h2 class="comments-title">评论</h2>
+  <div
+    id="giscus-container"
+    class="giscus-container"
+    data-giscus-config={JSON.stringify(config)}
+  ></div>
+</section>
+
+<script>
+  const GISCUS_ORIGIN = "https://giscus.app";
+
+  function currentTheme(): "light" | "dark" {
+    return document.documentElement.getAttribute("data-theme") === "dark"
+      ? "dark"
+      : "light";
+  }
+
+  function loadGiscus() {
+    const container = document.getElementById("giscus-container");
+    if (!container) return;
+    const raw = container.getAttribute("data-giscus-config");
+    if (!raw) return;
+    let cfg: Record<string, string>;
+    try {
+      cfg = JSON.parse(raw);
+    } catch {
+      return;
+    }
+    if (!cfg.category || !cfg.categoryId) {
+      container.innerHTML =
+        '<p class="comments-warning">评论尚未配置: 在 <code>Comments.astro</code> 顶部填入 <code>GISCUS_CATEGORY</code> 与 <code>GISCUS_CATEGORY_ID</code>。</p>';
+      return;
+    }
+    container.innerHTML = "";
+    const s = document.createElement("script");
+    s.src = "https://giscus.app/client.js";
+    s.setAttribute("data-repo", cfg.repo);
+    s.setAttribute("data-repo-id", cfg.repoId);
+    s.setAttribute("data-category", cfg.category);
+    s.setAttribute("data-category-id", cfg.categoryId);
+    s.setAttribute("data-mapping", cfg.mapping);
+    s.setAttribute("data-strict", "0");
+    s.setAttribute("data-reactions-enabled", "1");
+    s.setAttribute("data-emit-metadata", "0");
+    s.setAttribute("data-input-position", "top");
+    s.setAttribute("data-theme", currentTheme());
+    s.setAttribute("data-lang", cfg.lang);
+    s.setAttribute("data-loading", "lazy");
+    s.crossOrigin = "anonymous";
+    s.async = true;
+    container.appendChild(s);
+  }
+
+  function postTheme(): boolean {
+    const iframe = document.querySelector<HTMLIFrameElement>(
+      "iframe.giscus-frame",
+    );
+    if (!iframe || !iframe.contentWindow) return false;
+    iframe.contentWindow.postMessage(
+      { giscus: { setConfig: { theme: currentTheme() } } },
+      GISCUS_ORIGIN,
+    );
+    return true;
+  }
+
+  // Theme change → push to iframe. If iframe is not yet mounted (loading=lazy
+  // or still booting), retry briefly so the change does not get dropped.
+  let retryHandle = 0;
+  let retries = 0;
+  function syncGiscusTheme() {
+    if (retryHandle) {
+      window.clearTimeout(retryHandle);
+      retryHandle = 0;
+    }
+    if (postTheme()) {
+      retries = 0;
+      return;
+    }
+    if (retries < 10) {
+      retries++;
+      retryHandle = window.setTimeout(syncGiscusTheme, 300);
+    }
+  }
+
+  // Giscus emits messages once the iframe is ready (resize, discussion, error).
+  // Re-push theme on the first such message so the iframe matches the page
+  // even if it booted with a stale data-theme attribute.
+  window.addEventListener("message", (event) => {
+    if (event.origin !== GISCUS_ORIGIN) return;
+    const data = event.data;
+    if (data && typeof data === "object" && "giscus" in data) {
+      postTheme();
+    }
+  });
+
+  document.addEventListener("astro:page-load", loadGiscus);
+  window.addEventListener("theme:changed", syncGiscusTheme);
+</script>
+
+<style>
+  .comments {
+    border-top: 1px solid color-mix(in srgb, var(--app-border) 70%, transparent);
+    padding-top: 1.5rem;
+  }
+
+  .comments-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--app-text);
+    letter-spacing: -0.01em;
+    margin-bottom: 1rem;
+  }
+
+  .giscus-container {
+    min-height: 5rem;
+  }
+
+  .giscus-container :global(.comments-warning) {
+    font-size: 0.875rem;
+    color: color-mix(in srgb, var(--app-text-muted) 90%, transparent);
+    background: color-mix(in srgb, var(--app-surface-2) 50%, transparent);
+    border: 1px dashed color-mix(in srgb, var(--app-border) 80%, transparent);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .giscus-container :global(code) {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    background: color-mix(in srgb, var(--app-surface-2) 75%, transparent);
+    border: 1px solid color-mix(in srgb, var(--app-border) 80%, transparent);
+    padding: 0.05rem 0.3rem;
+    border-radius: 0.25rem;
+    font-size: 0.85em;
+  }
+</style>
