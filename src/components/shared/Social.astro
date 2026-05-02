@@ -1,33 +1,38 @@
 ---
-import TwitterIcon from "./icons/contact/TwitterIcon.astro";
-import YouTubeIcon from "./icons/contact/YouTubeIcon.astro";
-import FacebookIcon from "./icons/contact/FacebookIcon.astro";
+import GitHubIcon from "./icons/contact/GitHubIcon.astro";
+import EmailIcon from "./icons/contact/EmailIcon.astro";
+import RSSIcon from "./icons/contact/RSSIcon.astro";
 
 type SocialLink = {
   href: string;
   label: string;
-  icon: 'twitter' | 'youtube' | 'facebook';
+  icon: 'github' | 'email' | 'rss';
 };
 
 const {
   links = [
-    { href: 'https://twitter.com', label: 'Twitter', icon: 'twitter' },
-    { href: 'https://www.youtube.com', label: 'YouTube', icon: 'youtube' },
-    { href: 'https://www.facebook.com', label: 'Facebook', icon: 'facebook' },
+    { href: 'https://github.com/cannoyroy', label: 'GitHub', icon: 'github' },
+    { href: 'mailto:untymen@163.com', label: 'Email', icon: 'email' },
+    { href: '/rss.xml', label: 'RSS', icon: 'rss' },
   ],
 } = Astro.props as { links?: SocialLink[] };
 
 const iconMap = {
-  twitter: TwitterIcon,
-  youtube: YouTubeIcon,
-  facebook: FacebookIcon,
+  github: GitHubIcon,
+  email: EmailIcon,
+  rss: RSSIcon,
 };
 ---
 <div class="grid grid-flow-col gap-4">
   {links.map((item) => {
     const Icon = iconMap[item.icon];
+    const isExternal = !item.href.startsWith('mailto:');
     return (
-      <a href={item.href} aria-label={item.label} target="_blank" rel="noreferrer noopener">
+      <a
+        href={item.href}
+        aria-label={item.label}
+        {...(isExternal ? { target: '_blank', rel: 'noreferrer noopener' } : {})}
+      >
         <Icon />
       </a>
     );

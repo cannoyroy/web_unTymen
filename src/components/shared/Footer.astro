@@ -2,19 +2,12 @@
 import Social from './Social.astro';
 
 type FooterLink = { label: string; href: string };
-type SocialLink = { href: string; label: string; icon: 'twitter' | 'youtube' | 'facebook' };
+type SocialLink = { href: string; label: string; icon: 'github' | 'email' | 'rss' };
 
 const {
-  primaryLinks = [
-    { label: 'Blog', href: '/blog/' },
-    { label: 'RSS', href: '/rss.xml' },
-    { label: 'Contact', href: '/about/' },
-    { label: 'Search', href: '/blog/' },
-  ],
   projectLink = { label: 'About Me', href: '/about/' },
   socialLinks,
 } = Astro.props as {
-  primaryLinks?: FooterLink[];
   projectLink?: FooterLink;
   socialLinks?: SocialLink[];
 };
@@ -35,26 +28,23 @@ const {
         Engineer, Entrepreneur and Student
       </p>
 
-      <!-- Navigation links -->
-      <nav class="flex flex-wrap justify-center gap-6 text-sm">
-        {primaryLinks.map((item) => (
-          <a 
-            class="text-base-content/70 hover:text-[var(--app-accent)] transition-colors duration-300" 
-            href={item.href}
-          >
-            {item.label}
-          </a>
-        ))}
-      </nav>
-
       <!-- Project and Site buttons -->
-      <div class="flex justify-center gap-4">
+      <div class="flex flex-wrap justify-center gap-4">
         <a
           class="inline-flex items-center gap-2 px-6 py-2 rounded-full border border-[var(--app-accent)] text-sm text-[var(--app-accent)] hover:bg-[var(--app-accent)] hover:text-[var(--app-accent-contrast)] transition-all duration-300 shadow-[inset_0_0_20px_var(--app-accent-soft)]"
           href={projectLink.href}
         >
           <span class="h-1.5 w-1.5 rounded-full bg-[var(--app-accent)]"></span>
           {projectLink.label}
+        </a>
+        <a
+          class="inline-flex items-center gap-2 px-6 py-2 rounded-full border border-[var(--app-wiki)] text-sm text-[var(--app-wiki)] hover:bg-[var(--app-wiki)] hover:text-[var(--app-wiki-contrast)] transition-all duration-300 shadow-[inset_0_0_20px_var(--app-wiki-soft)]"
+          href="https://wiki.untymen.com/"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          <span class="h-1.5 w-1.5 rounded-full bg-[var(--app-wiki)]"></span>
+          My Wiki
         </a>
         <a
           class="inline-flex items-center gap-2 px-6 py-2 rounded-full border border-base-300 text-sm text-base-content/70 hover:border-[var(--app-accent)] hover:text-[var(--app-accent)] transition-all duration-300"

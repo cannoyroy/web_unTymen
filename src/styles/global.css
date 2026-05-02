@@ -18,6 +18,11 @@ html[data-theme="light"] {
   --app-link: #5b839b;
   --app-focus: #8fb1c4;
 
+  --app-wiki: #b59166;
+  --app-wiki-hover: #a37e54;
+  --app-wiki-soft: #ede2cf;
+  --app-wiki-contrast: #fcf9f3;
+
   --color-base-100: var(--app-surface);
   --color-base-200: var(--app-surface-2);
   --color-base-300: var(--app-border);
@@ -43,6 +48,11 @@ html[data-theme="dark"] {
   --app-accent-contrast: #0c1720;
   --app-link: #9fc2d3;
   --app-focus: #9ab9c9;
+
+  --app-wiki: #d4b07a;
+  --app-wiki-hover: #e5c190;
+  --app-wiki-soft: #2e2519;
+  --app-wiki-contrast: #1a1409;
 
   --color-base-100: var(--app-surface);
   --color-base-200: var(--app-surface-2);
