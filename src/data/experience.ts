@@ -43,7 +43,7 @@ export interface ExperienceSectionRef {
 }
 
 export const heroProfile: HeroProfile = {
-  name: "Reid",
+  name: "Reid Qian",
   line2: "Automation",
   researchTitle: "Research Interests:",
   researchBullets: [

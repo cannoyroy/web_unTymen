@@ -19,10 +19,10 @@ interface Props {
 const { frontmatter, readingTime = 1 } = Astro.props as Props;
 ---
 
-<header class="border-b border-slate-300/90 pb-6">
-  <h1 class="text-3xl font-semibold tracking-tight text-slate-900 md:text-4xl">{frontmatter.title}</h1>
+<header class="border-b border-base-300 pb-6">
+  <h1 class="text-3xl font-semibold tracking-tight text-base-content md:text-4xl">{frontmatter.title}</h1>
 
-  <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-600">
+  <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-base-content/60">
     <span>{frontmatter.author}</span>
     <span aria-hidden="true">/</span>
     <time datetime={frontmatter.pubDate.toISOString()}>{frontmatter.pubDate.toLocaleDateString()}</time>
@@ -30,11 +30,11 @@ const { frontmatter, readingTime = 1 } = Astro.props as Props;
     <span>{readingTime} 分钟阅读</span>
   </div>
 
-  <p class="mt-4 leading-7 text-slate-700">{frontmatter.description}</p>
+  <p class="mt-4 leading-7 text-base-content/85">{frontmatter.description}</p>
 
   {frontmatter.image?.url && (
     <img
-      class="mt-5 max-h-[420px] w-full rounded-lg border border-slate-300 object-cover"
+      class="mt-5 max-h-[420px] w-full rounded-lg border border-base-300 object-cover"
       src={frontmatter.image.url}
       alt={frontmatter.image.alt || ""}
       loading="lazy"
@@ -47,7 +47,7 @@ const { frontmatter, readingTime = 1 } = Astro.props as Props;
         <li>
           <a
             href={`/tags/${tag}`}
-            class="inline-flex border border-slate-300 px-2.5 py-1 text-xs tracking-wide text-slate-700 transition hover:border-slate-500 hover:text-slate-900"
+            class="inline-flex border border-base-300 px-2.5 py-1 text-xs tracking-wide text-base-content/75 transition hover:border-base-content hover:text-base-content"
           >
             #{tag}
           </a>

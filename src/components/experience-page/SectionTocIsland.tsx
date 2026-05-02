@@ -1,15 +1,15 @@
 import { useEffect } from "preact/hooks";
 
 const ACTIVE_LINK_CLASSES = [
-  "border-slate-900",
-  "text-slate-900",
+  "border-base-content",
+  "text-base-content",
   "font-semibold",
-  "bg-white/60",
+  "bg-base-300/40",
 ];
 
 const INACTIVE_LINK_CLASSES = [
   "border-transparent",
-  "text-slate-500",
+  "text-base-content/55",
   "font-normal",
   "bg-transparent",
 ];
