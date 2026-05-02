@@ -20,11 +20,13 @@
     "astro": "^6.1.10",
     "daisyui": "^5.5.17",
     "katex": "^0.16.45",
+    "mermaid": "^11.14.0",
     "pillow": "^0.0.9",
     "preact": "^10.28.3",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.1.18",
+    "unist-util-visit": "^5.1.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
