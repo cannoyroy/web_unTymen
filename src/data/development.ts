@@ -430,4 +430,37 @@ export const myTimeline: TimelineEntry[] = [
       '确保长文章的目录项始终可见与可滚动。',
     ],
   },
+  {
+    date: '2026-05-02',
+    title: '强化内容呈现与外链入口',
+    tag: 'Feature',
+    summary: '补齐图表渲染、修复 RSS 订阅，并在 footer 重整入口与社交链接。',
+    details: [
+      '集成 Mermaid，在博文中原生渲染时序图、流程图、关系图。',
+      '修复 RSS feed 生成，订阅源可被常见阅读器正常解析。',
+      'Footer 重设计：补齐社交链接，新增独立 Wiki 入口。',
+    ],
+  },
+  {
+    date: '2026-05-02',
+    title: '接入百度统计与 giscus 评论',
+    tag: 'Integration',
+    summary: '为站点引入访问分析与文章评论两套第三方能力。',
+    details: [
+      '在 BaseLayout 注入百度统计脚本，监听 astro:after-swap 处理 SPA 切换的浏览上报。',
+      '博文页接入 giscus（基于 GitHub Discussions），按 og:title 进行讨论映射。',
+      'giscus 主题随站点明/暗模式切换实时同步，避免深色背景出现亮白评论框。',
+    ],
+  },
+  {
+    date: '2026-05-02',
+    title: '深色模式对比度全量审计',
+    tag: 'Theme',
+    summary: '替换 18 个组件中的硬编码调色板工具类为 daisyUI 语义令牌，修复深色模式下文字对比度过低。',
+    details: [
+      '统一改用 text-base-content（含 /N 透明度档位）、bg-base-100/200/300、border-base-* 等主题感知令牌。',
+      '覆盖博文标题/TOC、experience 卡片、博客列表与侧栏、首页 hero 与 moment 弹窗。',
+      'ONLINE 徽章改用 bg-warning/15 text-warning，与 daisyUI 主题色保持一致。',
+    ],
+  },
 ];
